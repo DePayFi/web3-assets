@@ -120,5 +120,43 @@ describe('assets', ()=>{
         }
       ])
     })
+
+    it('fetches the assets for a given account', async()=> {
+      let account = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
+      fetchMock.get({
+          url: `https://api.depay.pro/v1/assets?account=${account}&blockchain=ethereum`,
+          headers: { 'X-Api-Key': 'TEST-123' }
+        }, [{
+          "name": "Ether",
+          "symbol": "ETH",
+          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "type": "NATIVE",
+          "balance": "1300000000000000000"
+        }, {
+          "name": "DePay",
+          "symbol": "DEPAY",
+          "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+          "type": "ERC20",
+          "balance": "1000000000000000000"
+        }]
+      )
+      expect(await getAssets({ account, blockchain: 'ethereum', apiKey: 'TEST-123' })).toEqual([
+        {
+          "blockchain": "ethereum",
+          "name": "Ether",
+          "symbol": "ETH",
+          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "type": "NATIVE",
+          "balance": "1300000000000000000"
+        }, {
+          "blockchain": "ethereum",
+          "name": "DePay",
+          "symbol": "DEPAY",
+          "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+          "type": "ERC20",
+          "balance": "1000000000000000000"
+        }
+      ])
+    })
   })
 })

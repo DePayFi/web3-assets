@@ -34,7 +34,12 @@
     let wallet = await depayWeb3Wallets.getWallet();
     if (!wallet) { return }
 
-    let account = await wallet.account();
+    let account;
+    if(options.account) {
+      account = options.account;
+    } else {
+      account = await wallet.account();
+    }
     if (!account) { return }
 
     if(options.apiKey == undefined) { throw 'Web3Wallets: Please pass an apiKey. See documentation.' }

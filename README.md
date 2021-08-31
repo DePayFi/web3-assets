@@ -108,6 +108,22 @@ let assets = await getAssets({ blockchain: 'bsc', apiKey: 'XXX' })
 //]
 ```
 
+Also allows you to retrieve assets for a given account for a given blockchain:
+
+```javascript
+let assets = await getAssets({ account: '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE', blockchain: 'bsc', apiKey: 'XXX' })
+//[
+// {
+//   "name": "PancakeSwap Token",
+//   "symbol": "CAKE",
+//   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+//   "blockchain": "bsc",
+//   "type": "BEP20",
+//   "balance": "2221112213212321"
+// }
+//]
+```
+
 ## Development
 
 ### Get started
