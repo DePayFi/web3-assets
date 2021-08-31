@@ -32,12 +32,11 @@
     if(options === undefined) { options = {}; }
     
     let wallet = await depayWeb3Wallets.getWallet();
-    if (!wallet) { return }
 
     let account;
     if(options.account) {
       account = options.account;
-    } else {
+    } else if(wallet) {
       account = await wallet.account();
     }
     if (!account) { return }

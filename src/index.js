@@ -30,12 +30,11 @@ const getAssets = async (options) => {
   if(options === undefined) { options = {} }
   
   let wallet = await getWallet()
-  if (!wallet) { return }
 
   let account
   if(options.account) {
     account = options.account
-  } else {
+  } else if(wallet) {
     account = await wallet.account()
   }
   if (!account) { return }

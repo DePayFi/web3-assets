@@ -16,7 +16,7 @@ describe('assets', ()=>{
     ).rejects.toEqual('Web3Wallets: Please pass an apiKey. See documentation.')
   })
 
-  describe('fetch assets', ()=>{
+  describe('fetch assets for connected wallet', ()=>{
 
     beforeEach(()=>{
       mock({ blockchain: 'ethereum', wallet: 'metamask' })
@@ -120,8 +120,11 @@ describe('assets', ()=>{
         }
       ])
     })
+  })
+  
+  describe('fetch assets for given account (no connected wallet)', ()=>{
 
-    it('fetches the assets for a given account', async()=> {
+    it('fetches the assets for a given account without any connected wallet', async()=> {
       let account = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
           url: `https://api.depay.pro/v1/assets?account=${account}&blockchain=ethereum`,
