@@ -1,7 +1,7 @@
 {
   "name": "depay-web3-assets",
   "moduleName": "Web3Assets",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
@@ -34,12 +34,13 @@
   "homepage": "https://github.com/DePayFi/depay-web3-assets#readme",
   "private": false,
   "dependencies": {
-    "depay-web3-blockchains": "^2.1.0",
-    "depay-web3-client": "^4.0.2",
-    "depay-web3-constants": "^3.0.0",
-    "depay-web3-wallets": "^5.0.0"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "depay-web3-blockchains": "^2.4.0",
+    "depay-web3-client": "^4.0.3",
+    "depay-web3-constants": "^3.0.1",
+    "depay-web3-wallets": "^5.1.1"
+  },
   "engines": {
     "node": ">=10"
   },
@@ -53,7 +54,11 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "babel-preset-env": "^1.7.0",
-    "depay-web3-mock": "^5.3.0",
+    "depay-web3-blockchains": "^2.4.0",
+    "depay-web3-client": "^4.0.3",
+    "depay-web3-constants": "^3.0.1",
+    "depay-web3-mock": "^5.9.0",
+    "depay-web3-wallets": "^5.1.1",
     "eslint": "^7.15.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.22.1",
