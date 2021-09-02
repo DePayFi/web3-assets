@@ -1,11 +1,13 @@
 import fetchMock from 'fetch-mock'
 import { getAssets } from 'src'
 import { mock, resetMocks } from 'depay-web3-mock'
+import { provider, resetCache } from 'depay-web3-client'
 
 describe('assets', ()=>{
 
   beforeEach(()=>fetchMock.reset())
   beforeEach(resetMocks)
+  beforeEach(resetCache)
   afterEach(resetMocks)
 
   it('raises an error if api key is not set', async ()=>{
@@ -160,6 +162,60 @@ describe('assets', ()=>{
           "balance": "1000000000000000000"
         }
       ])
+    })
+  })
+
+  describe('NATIVE currency missing via API', ()=>{
+
+    beforeEach(()=>{
+      mock({ blockchain: 'ethereum', wallet: 'metamask' })
+      fetchMock.get({
+          url: 'https://api.depay.pro/v1/assets?account=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&blockchain=ethereum',
+          headers: { 'X-Api-Key': 'TEST-123' }
+        }, [{
+          "name": "Dai Stablecoin",
+          "symbol": "DAI",
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+          "type": "ERC20"
+        }]
+      )
+      fetchMock.get({
+          url: 'https://api.depay.pro/v1/assets?account=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&blockchain=bsc',
+          headers: { 'X-Api-Key': 'TEST-123' }
+        }, [{
+          "name": "PancakeSwap",
+          "symbol": "CAKE",
+          "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+          "type": "BEP20"
+        }]
+      )
+    })
+
+    it('ensures fetching asset for NATIVE currency', async()=> {
+      let ethereumBalanceMock = mock({ 
+        provider: await provider('ethereum'),
+        blockchain: 'ethereum',
+        balance: {
+          for: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+          return: '22222221'
+        }
+      })
+      let bscBalanceMock = mock({ 
+        provider: await provider('bsc'),
+        blockchain: 'bsc',
+        balance: {
+          for: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+          return: '3333333335'
+        }
+      })
+
+      let assets = await getAssets({ apiKey: 'TEST-123' })
+
+      expect(assets.find((a)=>a.name=='Ether').balance).toEqual('22222221')
+      expect(assets.find((a)=>a.name=='Binance Coin').balance).toEqual('3333333335')
+
+      expect(ethereumBalanceMock).toHaveBeenCalled()
+      expect(bscBalanceMock).toHaveBeenCalled()
     })
   })
 })
