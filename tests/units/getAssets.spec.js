@@ -193,7 +193,7 @@ describe('assets', ()=>{
 
     it('ensures fetching asset for NATIVE currency', async()=> {
       let ethereumBalanceMock = mock({ 
-        provider: await provider('ethereum'),
+        provider: provider('ethereum'),
         blockchain: 'ethereum',
         balance: {
           for: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
@@ -201,7 +201,7 @@ describe('assets', ()=>{
         }
       })
       let bscBalanceMock = mock({ 
-        provider: await provider('bsc'),
+        provider: provider('bsc'),
         blockchain: 'bsc',
         balance: {
           for: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
