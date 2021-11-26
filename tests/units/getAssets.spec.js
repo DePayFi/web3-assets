@@ -9,6 +9,11 @@ describe('assets', ()=>{
   beforeEach(resetMocks)
   beforeEach(resetCache)
   afterEach(resetMocks)
+  const accounts = ['0xd8da6bf26964af9d7eed9e03e53415d37aa96045']
+  beforeEach(()=>{
+    mock({ blockchain: 'ethereum', accounts: { return: accounts } })
+    mock({ blockchain: 'bsc', accounts: { return: accounts } })
+  })
 
   it('raises an error if api key is not set', async ()=>{
     mock('ethereum')
