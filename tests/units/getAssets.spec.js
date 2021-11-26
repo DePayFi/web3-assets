@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock'
 import { getAssets } from 'src'
-import { mock, resetMocks } from 'depay-web3-mock'
-import { provider, resetCache } from 'depay-web3-client'
+import { mock, resetMocks } from '@depay/web3-mock'
+import { provider, resetCache } from '@depay/web3-client'
 
 describe('assets', ()=>{
 

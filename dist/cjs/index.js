@@ -2,15 +2,15 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var depayWeb3Constants = require('depay-web3-constants');
-var depayWeb3Wallets = require('depay-web3-wallets');
-var depayWeb3Client = require('depay-web3-client');
+var web3Constants = require('@depay/web3-constants');
+var web3Wallets = require('@depay/web3-wallets');
+var web3Client = require('@depay/web3-client');
 
 const ensureNativeTokenAsset = async ({ account, assets, blockchain }) => {
   if(assets.find((asset)=> {
-    return asset.address.toLowerCase() == depayWeb3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()
+    return asset.address.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()
   }) == undefined) {
-    let balance = await depayWeb3Client.request(
+    let balance = await web3Client.request(
       {
         blockchain: blockchain,
         address: account,
@@ -19,9 +19,9 @@ const ensureNativeTokenAsset = async ({ account, assets, blockchain }) => {
       { cache: 30000 }
     );
     assets = [{
-      name: depayWeb3Constants.CONSTANTS[blockchain].CURRENCY,
-      symbol: depayWeb3Constants.CONSTANTS[blockchain].SYMBOL,
-      address: depayWeb3Constants.CONSTANTS[blockchain].NATIVE,
+      name: web3Constants.CONSTANTS[blockchain].CURRENCY,
+      symbol: web3Constants.CONSTANTS[blockchain].SYMBOL,
+      address: web3Constants.CONSTANTS[blockchain].NATIVE,
       type: 'NATIVE',
       blockchain,
       balance: balance.toString()
@@ -33,7 +33,7 @@ const ensureNativeTokenAsset = async ({ account, assets, blockchain }) => {
 const getAssets = async (options) => {
   if(options === undefined) { options = {}; }
   
-  let wallet = await depayWeb3Wallets.getWallet();
+  let wallet = await web3Wallets.getWallet();
 
   let account;
   if(options.account) {

@@ -1,6 +1,6 @@
-import { CONSTANTS } from 'depay-web3-constants'
-import { getWallet } from 'depay-web3-wallets'
-import { request } from 'depay-web3-client'
+import { CONSTANTS } from '@depay/web3-constants'
+import { getWallet } from '@depay/web3-wallets'
+import { request } from '@depay/web3-client'
 
 const ensureNativeTokenAsset = async ({ account, assets, blockchain }) => {
   if(assets.find((asset)=> {

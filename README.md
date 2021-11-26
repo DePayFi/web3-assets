@@ -1,17 +1,17 @@
 ## Quickstart
 
 ```
-yarn add depay-web3-assets
+yarn add @depay/web3-assets
 ```
 
 or 
 
 ```
-npm install --save depay-web3-assets
+npm install --save @depay/web3-assets
 ```
 
 ```javascript
-import { getAssets } from 'depay-web3-assets'
+import { getAssets } from '@depay/web3-assets'
 
 let assets = await getAssets({ apiKey: 'XXX' })
 //[
@@ -63,7 +63,7 @@ This requires you to have a [DePay PRO apiKey](https://depay.fi/documentation/ap
 
 ```javascript
 
-import { getAssets } from 'depay-web3-assets'
+import { getAssets } from '@depay/web3-assets'
 
 let assets = await getAssets({ apiKey: 'XXX' })
 //[
