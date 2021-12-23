@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-assets",
   "moduleName": "Web3Assets",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",

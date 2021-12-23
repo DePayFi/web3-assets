@@ -20,27 +20,27 @@ let assets = await getAssets({ apiKey: 'XXX' })
 //   "symbol": "DAI",
 //   "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
 //   "blockchain": "ethereum",
-//   "type": "ERC20",
+//   "type": "20",
 //   "balance": "8007804249707967889272"
 // }, {
 //   "name": "DePay",
 //   "symbol": "DEPAY",
 //   "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
 //   "blockchain": "ethereum",
-//   "type": "ERC20",
+//   "type": "20",
 //   "balance": "212816860003097638129"
 // }, {
 //   "name": "PancakeSwap Token",
 //   "symbol": "CAKE",
 //   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
 //   "blockchain": "bsc",
-//   "type": "BEP20",
+//   "type": "20",
 //   "balance": "2221112213212321"
 // }
 //]
 ```
 
-This requires you to have a [DePay PRO apiKey](https://depay.fi/documentation/api#introduction).
+This requires you to have a [DePay Api Key](https://depay.fi/documentation/api#introduction).
 
 ## Support
 
@@ -48,10 +48,6 @@ This library supports the following blockchains:
 
 - [Ethereum](https://ethereum.org)
 - [Binance Smart Chain](https://www.binance.org/en/smartChain)
-
-This library supports the following wallets:
-
-- [MetaMask](https://metamask.io)
 
 ## Functionalities
 
@@ -72,21 +68,21 @@ let assets = await getAssets({ apiKey: 'XXX' })
 //   "symbol": "DAI",
 //   "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
 //   "blockchain": "ethereum",
-//   "type": "ERC20",
+//   "type": "20",
 //   "balance": "8007804249707967889272"
 // }, {
 //   "name": "DePay",
 //   "symbol": "DEPAY",
 //   "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
 //   "blockchain": "ethereum",
-//   "type": "ERC20",
+//   "type": "20",
 //   "balance": "212816860003097638129"
 // }, {
 //   "name": "PancakeSwap Token",
 //   "symbol": "CAKE",
 //   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
 //   "blockchain": "bsc",
-//   "type": "BEP20",
+//   "type": "20",
 //   "balance": "2221112213212321"
 // }
 //]
@@ -102,7 +98,7 @@ let assets = await getAssets({ blockchain: 'bsc', apiKey: 'XXX' })
 //   "symbol": "CAKE",
 //   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
 //   "blockchain": "bsc",
-//   "type": "BEP20",
+//   "type": "20",
 //   "balance": "2221112213212321"
 // }
 //]
@@ -118,7 +114,7 @@ let assets = await getAssets({ account: '0xEcA533Ef096f191A35DE76aa4580FA3A72272
 //   "symbol": "CAKE",
 //   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
 //   "blockchain": "bsc",
-//   "type": "BEP20",
+//   "type": "20",
 //   "balance": "2221112213212321"
 // }
 //]

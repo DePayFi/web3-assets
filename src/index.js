@@ -44,8 +44,8 @@ const getAssets = async (options) => {
   let assets = Promise.all(
     (options.blockchain ? [options.blockchain] : undefined || wallet.blockchains).map((blockchain) =>{
       
-      return fetch('https://api.depay.pro/v1/assets?account=' + account + '&blockchain=' + blockchain, {
-        headers: { 'X-Api-Key': options.apiKey }
+      return fetch(`https://api.depay.fi/v2/accounts/${blockchain}/${account}/assets`, {
+        headers: { 'x-api-key': options.apiKey }
       })
         .then((response) => response.json())
         .then(async (assets) => {
