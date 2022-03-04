@@ -15,14 +15,6 @@ describe('assets', ()=>{
     mock({ blockchain: 'bsc', accounts: { return: accounts } })
   })
 
-  it('raises an error if api key is not set', async ()=>{
-    mock('ethereum')
-    global.fetch = jest.fn()
-    await expect(
-      ()=>getAssets()
-    ).rejects.toEqual('Web3Wallets: Please pass an apiKey. See documentation.')
-  })
-
   describe('fetch assets for connected wallet', ()=>{
 
     beforeEach(()=>{
