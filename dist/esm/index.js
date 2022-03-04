@@ -42,7 +42,7 @@ const getAssets = async (options) => {
   let assets = Promise.all(
     (options.blockchain ? [options.blockchain] : wallet.blockchains).map((blockchain) =>{
       
-      return fetch(`https://api.depay.fi/v2/accounts/${blockchain}/${account}/assets`)
+      return fetch(`https://public.depay.fi/accounts/${blockchain}/${account}/assets`)
         .then((response) => response.json())
         .then(async (assets) => {
           return await ensureNativeTokenAsset({
