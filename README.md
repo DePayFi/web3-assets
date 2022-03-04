@@ -13,7 +13,7 @@ npm install --save @depay/web3-assets
 ```javascript
 import { getAssets } from '@depay/web3-assets'
 
-let assets = await getAssets({ apiKey: 'XXX' })
+let assets = await getAssets()
 //[
 // {
 //   "name": "Dai Stablecoin",
@@ -40,8 +40,6 @@ let assets = await getAssets({ apiKey: 'XXX' })
 //]
 ```
 
-This requires you to have a [DePay Api Key](https://depay.fi/documentation/api#introduction).
-
 ## Support
 
 This library supports the following blockchains:
@@ -55,13 +53,11 @@ This library supports the following blockchains:
 
 Retrieves all assets of the connected crypto wallet account for all supported blockchains at once.
 
-This requires you to have a [DePay PRO apiKey](https://depay.fi/documentation/api#introduction).
-
 ```javascript
 
 import { getAssets } from '@depay/web3-assets'
 
-let assets = await getAssets({ apiKey: 'XXX' })
+let assets = await getAssets()
 //[
 // {
 //   "name": "Dai Stablecoin",
@@ -91,7 +87,7 @@ let assets = await getAssets({ apiKey: 'XXX' })
 Also allows you to retrieve assets only for a given blockchain:
 
 ```javascript
-let assets = await getAssets({ blockchain: 'bsc', apiKey: 'XXX' })
+let assets = await getAssets({ blockchain: 'bsc' })
 //[
 // {
 //   "name": "PancakeSwap Token",
@@ -107,7 +103,7 @@ let assets = await getAssets({ blockchain: 'bsc', apiKey: 'XXX' })
 Also allows you to retrieve assets for a given account for a given blockchain:
 
 ```javascript
-let assets = await getAssets({ account: '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE', blockchain: 'bsc', apiKey: 'XXX' })
+let assets = await getAssets({ account: '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE', blockchain: 'bsc' })
 //[
 // {
 //   "name": "PancakeSwap Token",

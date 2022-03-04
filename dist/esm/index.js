@@ -39,14 +39,10 @@ const getAssets = async (options) => {
   }
   if (!account) { return }
 
-  if(options.apiKey == undefined) { throw 'Web3Wallets: Please pass an apiKey. See documentation.' }
-  
   let assets = Promise.all(
     (options.blockchain ? [options.blockchain] : wallet.blockchains).map((blockchain) =>{
       
-      return fetch(`https://api.depay.fi/v2/accounts/${blockchain}/${account}/assets`, {
-        headers: { 'x-api-key': options.apiKey }
-      })
+      return fetch(`https://api.depay.fi/v2/accounts/${blockchain}/${account}/assets`)
         .then((response) => response.json())
         .then(async (assets) => {
           return await ensureNativeTokenAsset({

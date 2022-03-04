@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-assets",
   "moduleName": "Web3Assets",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "description": "",
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",

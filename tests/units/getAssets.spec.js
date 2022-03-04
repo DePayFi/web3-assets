@@ -29,7 +29,6 @@ describe('assets', ()=>{
       mock({ blockchain: 'ethereum', wallet: 'metamask' })
       fetchMock.get({
           url: 'https://api.depay.fi/v2/accounts/ethereum/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
-          headers: { 'X-Api-Key': 'TEST-123' }
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -44,7 +43,6 @@ describe('assets', ()=>{
       )
       fetchMock.get({
           url: 'https://api.depay.fi/v2/accounts/bsc/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
-          headers: { 'X-Api-Key': 'TEST-123' }
         }, [{
           "name": "Binance Coin",
           "symbol": "BNB",
@@ -135,7 +133,6 @@ describe('assets', ()=>{
       let account = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
           url: `https://api.depay.fi/v2/accounts/ethereum/${account}/assets`,
-          headers: { 'X-Api-Key': 'TEST-123' }
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -176,7 +173,6 @@ describe('assets', ()=>{
       mock({ blockchain: 'ethereum', wallet: 'metamask' })
       fetchMock.get({
           url: 'https://api.depay.fi/v2/accounts/ethereum/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
-          headers: { 'X-Api-Key': 'TEST-123' }
         }, [{
           "name": "Dai Stablecoin",
           "symbol": "DAI",
@@ -186,7 +182,6 @@ describe('assets', ()=>{
       )
       fetchMock.get({
           url: 'https://api.depay.fi/v2/accounts/bsc/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
-          headers: { 'X-Api-Key': 'TEST-123' }
         }, [{
           "name": "PancakeSwap",
           "symbol": "CAKE",
