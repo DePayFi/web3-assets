@@ -952,10 +952,10 @@
     rxjs "^6.6.3"
     stream-browserify "^3.0.0"
 
-"@depay/coinbase-wallet-sdk@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@depay/coinbase-wallet-sdk/-/coinbase-wallet-sdk-1.0.2.tgz#c263913722d5e17142cdb835b25e3de67fa09d11"
-  integrity sha512-zTfCxingAZ0JlTkPZ8zQJM3n8IPpDv7+DAYHKhgut52xzdgqa5wMpz6p9ZJEhhtQABem55NFwovmE0w1EPtVLA==
+"@depay/coinbase-wallet-sdk@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@depay/coinbase-wallet-sdk/-/coinbase-wallet-sdk-1.0.5.tgz#e4539995c3a221190da5cea0997b2d5ae425d9fc"
+  integrity sha512-TMmX3eKWmWERL40h660rBrdOrcopvDRI/cBrve2gm5H+4CApn6XacbhFCULTBe0/1n3Nu+RhxjqedMmpKxGdEw==
   dependencies:
     "@coinbase/wallet-sdk" "^3.0.5"
 
@@ -987,10 +987,10 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-11.7.0.tgz#587b2ab7de4b7728360f351c9d827cf921a30270"
   integrity sha512-MDdkiNXCZtibWTt/W9kylzdE/Ft8OnDX/W5gCzncZrA1hGZbZgX9ySlvQ2avvngWBw89I8WAlY4EUHUWn/UM0g==
 
-"@depay/web3-wallets@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-wallets/-/web3-wallets-10.0.0.tgz#c1d73083dfff38e2aa728e25e64cc63d4970162a"
-  integrity sha512-qjHc6W19sLgthzr03JqAyhvibmyDfd30vfclsvdo8wykWczqCCIMSIsrdtjPO1jua/xcOoESQWEIkapBmIpSyw==
+"@depay/web3-wallets@^10.0.3":
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/@depay/web3-wallets/-/web3-wallets-10.0.3.tgz#28bd498d4ecf2b23d06070f2c56d28fec14e1cd3"
+  integrity sha512-CpM6X94LTAJzpewL8jq3jEQhjq/CazlyMQkmDUh9tdU21xt+zLtS4gH5mAlwqtwy3RzISTGLKtWM7EZEl9JtTA==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
