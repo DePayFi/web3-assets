@@ -3,128 +3,19 @@ import { getAssets } from 'src'
 import { mock, resetMocks } from '@depay/web3-mock'
 import { provider, resetCache } from '@depay/web3-client'
 
-describe('assets', ()=>{
+describe('getAssets', ()=>{
 
   beforeEach(()=>fetchMock.reset())
   beforeEach(resetMocks)
   beforeEach(resetCache)
   afterEach(resetMocks)
-  const accounts = ['0xd8da6bf26964af9d7eed9e03e53415d37aa96045']
-  beforeEach(()=>{
-    mock({ blockchain: 'ethereum', accounts: { return: accounts } })
-    mock({ blockchain: 'bsc', accounts: { return: accounts } })
-  })
-
-  describe('fetch assets for connected wallet', ()=>{
-
-    beforeEach(()=>{
-      mock({ blockchain: 'ethereum', wallet: 'metamask' })
-      fetchMock.get({
-          url: 'https://public.depay.fi/accounts/ethereum/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
-        }, [{
-          "name": "Ether",
-          "symbol": "ETH",
-          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-          "type": "NATIVE"
-        }, {
-          "name": "Dai Stablecoin",
-          "symbol": "DAI",
-          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-          "type": "ERC20"
-        }]
-      )
-      fetchMock.get({
-          url: 'https://public.depay.fi/accounts/bsc/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
-        }, [{
-          "name": "Binance Coin",
-          "symbol": "BNB",
-          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-          "type": "NATIVE"
-        }, {
-          "name": "PancakeSwap",
-          "symbol": "CAKE",
-          "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
-          "type": "BEP20"
-        }]
-      )
-    })
-
-    it('fetches all assets for all supported blockchains that the connected wallet supports', async ()=> {
-      let assets = await getAssets({ apiKey: 'TEST-123' })
-      expect(assets).toEqual([
-        {
-          name: 'Ether',
-          symbol: 'ETH',
-          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-          type: 'NATIVE',
-          blockchain: 'ethereum'
-        },
-        {
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          type: 'ERC20',
-          blockchain: 'ethereum'
-        },
-        {
-          name: 'Binance Coin',
-          symbol: 'BNB',
-          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-          type: 'NATIVE',
-          blockchain: 'bsc'
-        },
-        {
-          name: 'PancakeSwap',
-          symbol: 'CAKE',
-          address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-          type: 'BEP20',
-          blockchain: 'bsc'
-        }
-      ])
-    })
-
-    it('fetches only the assets of the given blockchain', async()=> {
-      expect(await getAssets({ blockchain: 'ethereum', apiKey: 'TEST-123' })).toEqual([
-        {
-          name: 'Ether',
-          symbol: 'ETH',
-          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-          type: 'NATIVE',
-          blockchain: 'ethereum'
-        },
-        {
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          type: 'ERC20',
-          blockchain: 'ethereum'
-        }
-      ])
-      expect(await getAssets({ blockchain: 'bsc', apiKey: 'TEST-123' })).toEqual([
-        {
-          name: 'Binance Coin',
-          symbol: 'BNB',
-          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-          type: 'NATIVE',
-          blockchain: 'bsc'
-        },
-        {
-          name: 'PancakeSwap',
-          symbol: 'CAKE',
-          address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-          type: 'BEP20',
-          blockchain: 'bsc'
-        }
-      ])
-    })
-  })
   
-  describe('fetch assets for given account (no connected wallet)', ()=>{
+  describe('fetch assets for given accounts', ()=>{
 
     it('fetches the assets for a given account without any connected wallet', async()=> {
-      let account = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
+      let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${account}/assets`,
+          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -135,25 +26,58 @@ describe('assets', ()=>{
           "name": "DePay",
           "symbol": "DEPAY",
           "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
-          "type": "ERC20",
+          "type": "20",
           "balance": "1000000000000000000"
         }]
       )
-      expect(await getAssets({ account, blockchain: 'ethereum', apiKey: 'TEST-123' })).toEqual([
-        {
-          "blockchain": "ethereum",
-          "name": "Ether",
-          "symbol": "ETH",
+      fetchMock.get({
+          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+        }, [{
+          "name": "BNB",
+          "symbol": "BNB",
           "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
           "type": "NATIVE",
           "balance": "1300000000000000000"
         }, {
-          "blockchain": "ethereum",
           "name": "DePay",
           "symbol": "DEPAY",
           "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
-          "type": "ERC20",
+          "type": "20",
           "balance": "1000000000000000000"
+        }]
+      )
+      expect(await getAssets({ accounts: { ethereum: address, bsc: address } })).toEqual([
+        {
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          type: 'NATIVE',
+          balance: '1300000000000000000',
+          blockchain: 'ethereum'
+        },
+        {
+          name: 'DePay',
+          symbol: 'DEPAY',
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          type: '20',
+          balance: '1000000000000000000',
+          blockchain: 'ethereum'
+        },
+        {
+          name: 'BNB',
+          symbol: 'BNB',
+          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          type: 'NATIVE',
+          balance: '1300000000000000000',
+          blockchain: 'bsc'
+        },
+        {
+          name: 'DePay',
+          symbol: 'DEPAY',
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          type: '20',
+          balance: '1000000000000000000',
+          blockchain: 'bsc'
         }
       ])
     })
@@ -169,7 +93,7 @@ describe('assets', ()=>{
           "name": "Dai Stablecoin",
           "symbol": "DAI",
           "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-          "type": "ERC20"
+          "type": "20"
         }]
       )
       fetchMock.get({
@@ -178,12 +102,12 @@ describe('assets', ()=>{
           "name": "PancakeSwap",
           "symbol": "CAKE",
           "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
-          "type": "BEP20"
+          "type": "20"
         }]
       )
     })
 
-    it('ensures fetching asset for NATIVE currency', async()=> {
+    it('ensures fetching asset for NATIVE currency if it was missing in the api response', async()=> {
       let ethereumBalanceMock = mock({ 
         provider: provider('ethereum'),
         blockchain: 'ethereum',
@@ -201,10 +125,10 @@ describe('assets', ()=>{
         }
       })
 
-      let assets = await getAssets({ apiKey: 'TEST-123' })
+      let assets = await getAssets({ accounts: { ethereum: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045', bsc: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045' }})
 
-      expect(assets.find((a)=>a.name=='Ether').balance).toEqual('22222221')
-      expect(assets.find((a)=>a.name=='Binance Coin').balance).toEqual('3333333335')
+      expect(assets.find((a)=>a.symbol=='ETH').balance).toEqual('22222221')
+      expect(assets.find((a)=>a.symbol=='BNB').balance).toEqual('3333333335')
 
       expect(ethereumBalanceMock).toHaveBeenCalled()
       expect(bscBalanceMock).toHaveBeenCalled()

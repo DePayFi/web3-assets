@@ -13,7 +13,7 @@ npm install --save @depay/web3-assets
 ```javascript
 import { getAssets } from '@depay/web3-assets'
 
-let assets = await getAssets()
+let assets = await getAssets({ accounts: { ethereum: '0x08B277154218CCF3380CAE48d630DA13462E3950', bsc: '0x08B277154218CCF3380CAE48d630DA13462E3950' } })
 //[
 // {
 //   "name": "Dai Stablecoin",
@@ -38,6 +38,30 @@ let assets = await getAssets()
 //   "balance": "2221112213212321"
 // }
 //]
+```
+
+```javascript
+import { dripAssets } from '@depay/web3-assets'
+
+let allAssets = await dripAssets({
+  accounts: { ethereum: '0x08B277154218CCF3380CAE48d630DA13462E3950', bsc: '0x08B277154218CCF3380CAE48d630DA13462E3950' },
+  priority: [
+    { blockchain: 'ethereum', address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb' },
+    { blockchain: 'bsc', address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb' },
+    { blockchain: 'ethereum', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' },
+    { blockchain: 'bsc', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' },
+  ],
+  drip: (asset)=>{
+    // {
+    //   "name": "DePay",
+    //   "symbol": "DEPAY",
+    //   "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+    //   "blockchain": "ethereum",
+    //   "type": "20",
+    //   "balance": "212816860003097638129"
+    // }
+  }
+})
 ```
 
 ## Support
@@ -45,19 +69,19 @@ let assets = await getAssets()
 This library supports the following blockchains:
 
 - [Ethereum](https://ethereum.org)
-- [Binance Smart Chain](https://www.binance.org/en/smartChain)
+- [BNB Smart Chain](https://www.binance.org/en/smartChain)
 
 ## Functionalities
 
 ### getAssets
 
-Retrieves all assets of the connected crypto wallet account for all supported blockchains at once.
+Retrieves all assets of the given account on the given blockchains:
 
 ```javascript
 
 import { getAssets } from '@depay/web3-assets'
 
-let assets = await getAssets()
+let assets = await getAssets({ accounts: { ethereum: '0x08B277154218CCF3380CAE48d630DA13462E3950', bsc: '0x08B277154218CCF3380CAE48d630DA13462E3950' } })
 //[
 // {
 //   "name": "Dai Stablecoin",
@@ -84,36 +108,32 @@ let assets = await getAssets()
 //]
 ```
 
-Also allows you to retrieve assets only for a given blockchain:
+### dripAssets
+
+Drips every single asset immediately after resolved and all assets after all assets have been resolved (just as getAssets):
 
 ```javascript
-let assets = await getAssets({ blockchain: 'bsc' })
-//[
-// {
-//   "name": "PancakeSwap Token",
-//   "symbol": "CAKE",
-//   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
-//   "blockchain": "bsc",
-//   "type": "20",
-//   "balance": "2221112213212321"
-// }
-//]
-```
+import { dripAssets } from '@depay/web3-assets'
 
-Also allows you to retrieve assets for a given account for a given blockchain:
-
-```javascript
-let assets = await getAssets({ account: '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE', blockchain: 'bsc' })
-//[
-// {
-//   "name": "PancakeSwap Token",
-//   "symbol": "CAKE",
-//   "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
-//   "blockchain": "bsc",
-//   "type": "20",
-//   "balance": "2221112213212321"
-// }
-//]
+let allAssets = await dripAssets({
+  accounts: { ethereum: '0x08B277154218CCF3380CAE48d630DA13462E3950', bsc: '0x08B277154218CCF3380CAE48d630DA13462E3950' },
+  priority: [
+    { blockchain: 'ethereum', address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb' },
+    { blockchain: 'bsc', address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb' },
+    { blockchain: 'ethereum', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' },
+    { blockchain: 'bsc', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' },
+  ],
+  drip: (asset)=>{
+    // {
+    //   "name": "DePay",
+    //   "symbol": "DEPAY",
+    //   "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+    //   "blockchain": "ethereum",
+    //   "type": "20",
+    //   "balance": "212816860003097638129"
+    // }
+  }
+})
 ```
 
 ## Development
