@@ -62,14 +62,19 @@ const reduceAssetWithBalance = (asset, balance)=>{
   }, { balance: balance.toString() })
 };
 
+const exists = ({ assets, asset })=> {
+  return !!assets.find(element => element.blockchain == asset.blockchain && element.address.toLowerCase() == asset.address.toLowerCase())
+};
+
 var dripAssets = async (options) => {
   if(options === undefined) { options = { accounts: {}, priority: [] }; }
 
   let assets = [];
+  let promises = [];
 
   // Prioritized Assets
   
-  await Promise.all((options.priority || []).map((asset)=>{
+  promises = promises.concat((options.priority || []).map((asset)=>{
     return new Promise(async (resolve, reject)=>{
       let token = new Token(asset);
       let completedAsset = Object.assign({},
@@ -82,6 +87,7 @@ var dripAssets = async (options) => {
         }
       );
       if(completedAsset.balance != '0') {
+        if(exists({ assets, asset })) { return resolve() }
         assets.push(completedAsset);
         if(typeof options.drip == 'function') { options.drip(completedAsset); }
         resolve(completedAsset);
@@ -99,13 +105,11 @@ var dripAssets = async (options) => {
       majorTokens.push(Object.assign({}, token, { blockchain }));
     });
   }
-  await Promise.all(majorTokens.map((asset)=>{
+  promises = promises.concat((majorTokens.map((asset)=>{
     return new Promise((resolve, reject)=>{
-      if(assets.find(element => element.blockchain == asset.blockchain && element.address.toLowerCase() == asset.address.toLowerCase())) {
-        return resolve() // already part of assets
-      }
       new Token(asset).balance(options.accounts[asset.blockchain])
         .then((balance)=>{
+          if(exists({ assets, asset })) { return resolve() }
           const assetWithBalance = reduceAssetWithBalance(asset, balance);
           if(assetWithBalance.balance != '0') {
             assets.push(assetWithBalance);
@@ -116,29 +120,28 @@ var dripAssets = async (options) => {
         }
         }).catch((error)=>{ console.log(error); });
     })
-  }));
+  })));
 
   // All other assets
 
   let allAssets = await getAssets(options);
-  await Promise.all(allAssets.map((asset)=>{
+  promises = promises.concat((allAssets.map((asset)=>{
     return new Promise((resolve, reject)=>{
-      if(assets.find(element => element.blockchain == asset.blockchain && element.address.toLowerCase() == asset.address.toLowerCase())) {
-        resolve(); // already part of assets
-      } else {
-        return new Token(asset).balance(options.accounts[asset.blockchain]).then((balance)=>{
-          const assetWithBalance = reduceAssetWithBalance(asset, balance);
-          if(assetWithBalance.balance != '0') {
-            assets.push(assetWithBalance);
-            if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
-            resolve(assetWithBalance);
-          } else {
-            resolve();
-          }
-        })
-      }
+      return new Token(asset).balance(options.accounts[asset.blockchain]).then((balance)=>{
+        if(exists({ assets, asset })) { return resolve() }
+        const assetWithBalance = reduceAssetWithBalance(asset, balance);
+        if(assetWithBalance.balance != '0') {
+          assets.push(assetWithBalance);
+          if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
+          resolve(assetWithBalance);
+        } else {
+          resolve();
+        }
+      })
     })
-  }));
+  })));
+
+  await Promise.all(promises);
 
   return assets
 };
