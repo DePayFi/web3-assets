@@ -32,9 +32,13 @@ export default async (options) => {
           balance: (await token.balance(options.accounts[asset.blockchain])).toString()
         }
       )
-      assets.push(completedAsset)
-      if(typeof options.drip == 'function') { options.drip(completedAsset) }
-      resolve(completedAsset)
+      if(completedAsset.balance != '0') {
+        assets.push(completedAsset)
+        if(typeof options.drip == 'function') { options.drip(completedAsset) }
+        resolve(completedAsset)
+      } else {
+        resolve()
+      }
     })
   }))
   
@@ -55,9 +59,13 @@ export default async (options) => {
       new Token(asset).balance(options.accounts[asset.blockchain])
         .then((balance)=>{
           const assetWithBalance = reduceAssetWithBalance(asset, balance)
-          assets.push(assetWithBalance)
-          if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
-          resolve(assetWithBalance)
+          if(assetWithBalance.balance != '0') {
+            assets.push(assetWithBalance)
+            if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
+            resolve(assetWithBalance)
+        } else {
+          resolve()
+        }
         }).catch((error)=>{ console.log(error) })
     })
   }))
@@ -72,9 +80,13 @@ export default async (options) => {
       } else {
         return new Token(asset).balance(options.accounts[asset.blockchain]).then((balance)=>{
           const assetWithBalance = reduceAssetWithBalance(asset, balance)
-          assets.push(assetWithBalance)
-          if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
-          resolve(assetWithBalance)
+          if(assetWithBalance.balance != '0') {
+            assets.push(assetWithBalance)
+            if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
+            resolve(assetWithBalance)
+          } else {
+            resolve()
+          }
         })
       }
     })

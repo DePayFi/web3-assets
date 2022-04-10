@@ -282,6 +282,7 @@ describe('dripAssets', ()=>{
       mock({ call: { return: 'Wrapped Ether', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'name' }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
       mock({ call: { return: 'WETH', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'symbol' }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
       mock({ call: { return: 18, to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'decimals' }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
+      mock({ call: { return: '0', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
 
       mock({ call: { return: 'Wrapped BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'name' }, provider: providerFor('bsc'), blockchain: 'bsc' })
       mock({ call: { return: 'BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'symbol' }, provider: providerFor('bsc'), blockchain: 'bsc' })
@@ -301,7 +302,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(20)
+      expect(dripsCount).toEqual(19)
 
       let expectedAssets = [
         {
@@ -319,14 +320,6 @@ describe('dripAssets', ()=>{
           symbol: 'DEPAY',
           decimals: 18,
           balance: '56789'
-        },
-        {
-          blockchain: 'ethereum',
-          address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-          name: 'Wrapped Ether',
-          symbol: 'WETH',
-          decimals: 18,
-          balance: '123456789'
         },
         {
           blockchain: 'bsc',
