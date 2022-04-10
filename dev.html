@@ -11,17 +11,40 @@
     <script crossorigin src="https://unpkg.com/@depay/walletconnect-v1@1"></script>
     <script crossorigin src="https://unpkg.com/@depay/web3-blockchains@4"></script>
     <script crossorigin src="https://unpkg.com/@depay/web3-client@8"></script>
+    <script crossorigin src="https://unpkg.com/@depay/web3-tokens@8"></script>
     <script crossorigin src="https://unpkg.com/@depay/web3-wallets@8"></script>
     <script src="tmp/index.dev.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.css">
+    <style>
+      .btn-primary {
+        color: #fff;
+        background-color: #ea357a !important;
+        border: 1px solid #ea357a !important;
+        padding: 0.35rem 1.2rem !important;
+        box-shadow: none;
+        outline: none;
+      }
+      .btn-primary:hover {
+        background-color: #db3071 !important;
+      }
+    </style>
   </head>
-  <body>
-    <div class="container">
-      <div class="row pt-5">
-        <div class="col">
-          <h1>DePay Web3Assets</h1>
-          <p>Open the browser inspector and try: `Web3Assets.getAssets()`</p>
-        </div>
+  <body style="background-color: #FAFAFA;">
+    <div class="container py-4">
+
+      <div class="py-2 pb-3 text-center">
+        <a href="https://depay.fi" target="_blank">
+          <img alt="DePay Logo" class="navbar-logo shadow-sm" src="https://depay.fi/logo.svg" style="height: 50px; width: 50px; border-radius: 999px;"/>
+        </a>
+      </div>
+
+      <div class="row px-2">
+
+        <h5 class="px-4">Web3Assets</h5>
+        <p>Open the browser inspector and try: `Web3Assets.getAssets()`</p>
+       
       </div>
     </div>
   </body>
 </html>
+
