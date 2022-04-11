@@ -3,10 +3,12 @@ import { request } from '@depay/web3-client';
 import { Blockchain } from '@depay/web3-blockchains';
 import { Token } from '@depay/web3-tokens';
 
-const ensureNativeTokenAsset = async ({ address, assets, blockchain }) => {
-  if(assets.find((asset)=> {
-    return asset.address.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()
-  }) == undefined) {
+const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
+  if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+  if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+
+  const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()));
+  if(nativeTokenMissing) {
     let balance = await request(
       {
         blockchain: blockchain,
@@ -27,6 +29,20 @@ const ensureNativeTokenAsset = async ({ address, assets, blockchain }) => {
   return assets
 };
 
+const filterAssets = ({ assets, blockchain, options })=>{
+  if(options.only) {
+    return assets.filter((asset)=>{
+      return (options.only[blockchain] || []).find((onlyAsset)=>(onlyAsset.toLowerCase() == asset.address.toLowerCase()))
+    })
+  } else if(options.exclude) {
+    return assets.filter((asset)=>{
+      return (options.exclude[blockchain] || []).find((excludeAsset)=>(excludeAsset.toLowerCase() != asset.address.toLowerCase()))
+    })
+  } else {
+    return assets
+  }
+};
+
 var getAssets = async (options) => {
   if(options === undefined) { options = { accounts: {} }; }
 
@@ -41,7 +57,8 @@ var getAssets = async (options) => {
         .then(async (assets) => {
           return await ensureNativeTokenAsset({
             address,
-            assets: assets.map((asset) => Object.assign(asset, { blockchain })),
+            options,
+            assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
             blockchain
           })
         }).catch((error) => { console.log(error); })
@@ -64,6 +81,16 @@ const reduceAssetWithBalance = (asset, balance)=>{
 
 const exists = ({ assets, asset })=> {
   return !!assets.find(element => element.blockchain == asset.blockchain && element.address.toLowerCase() == asset.address.toLowerCase())
+};
+
+const isFiltered = ({ options, address, blockchain })=> {
+  if(options && options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>only.toLowerCase()==address.toLowerCase())){ 
+    return true 
+  }
+  if(options && options.exclude && options.exclude[blockchain] && options.exclude[blockchain].find((only)=>only.toLowerCase()==address.toLowerCase())){
+    return true 
+  }
+  return false
 };
 
 var dripAssets = async (options) => {
@@ -102,6 +129,7 @@ var dripAssets = async (options) => {
   let majorTokens = [];
   for (var blockchain in options.accounts){
     Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+      if(isFiltered({ options, address: token.address, blockchain })){ return }
       majorTokens.push(Object.assign({}, token, { blockchain }));
     });
   }

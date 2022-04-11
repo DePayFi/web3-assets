@@ -17,6 +17,16 @@ const exists = ({ assets, asset })=> {
   return !!assets.find(element => element.blockchain == asset.blockchain && element.address.toLowerCase() == asset.address.toLowerCase())
 }
 
+const isFiltered = ({ options, address, blockchain })=> {
+  if(options && options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>only.toLowerCase()==address.toLowerCase())){ 
+    return true 
+  }
+  if(options && options.exclude && options.exclude[blockchain] && options.exclude[blockchain].find((only)=>only.toLowerCase()==address.toLowerCase())){
+    return true 
+  }
+  return false
+}
+
 export default async (options) => {
   if(options === undefined) { options = { accounts: {}, priority: [] } }
 
@@ -53,6 +63,7 @@ export default async (options) => {
   let majorTokens = []
   for (var blockchain in options.accounts){
     Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+      if(isFiltered({ options, address: token.address, blockchain })){ return }
       majorTokens.push(Object.assign({}, token, { blockchain }))
     })
   }
