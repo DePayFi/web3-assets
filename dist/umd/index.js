@@ -153,22 +153,24 @@
 
     // All other assets
 
-    let allAssets = await getAssets(options);
-    promises = promises.concat((allAssets.map((asset)=>{
-      return new Promise((resolve, reject)=>{
-        return new web3Tokens.Token(asset).balance(options.accounts[asset.blockchain]).then((balance)=>{
-          if(exists({ assets, asset })) { return resolve() }
-          const assetWithBalance = reduceAssetWithBalance(asset, balance);
-          if(assetWithBalance.balance != '0') {
-            assets.push(assetWithBalance);
-            if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
-            resolve(assetWithBalance);
-          } else {
-            resolve();
-          }
+    if(options.only == undefined || Object.keys(options.only).every((list)=>list.length == 0)) {
+      let allAssets = await getAssets(options);
+      promises = promises.concat((allAssets.map((asset)=>{
+        return new Promise((resolve, reject)=>{
+          return new web3Tokens.Token(asset).balance(options.accounts[asset.blockchain]).then((balance)=>{
+            if(exists({ assets, asset })) { return resolve() }
+            const assetWithBalance = reduceAssetWithBalance(asset, balance);
+            if(assetWithBalance.balance != '0') {
+              assets.push(assetWithBalance);
+              if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
+              resolve(assetWithBalance);
+            } else {
+              resolve();
+            }
+          })
         })
-      })
-    })));
+      })));
+    }
 
     await Promise.all(promises);
 
