@@ -37,22 +37,26 @@ export default async (options) => {
   
   promises = promises.concat((options.priority || []).map((asset)=>{
     return new Promise(async (resolve, reject)=>{
-      let token = new Token(asset)
-      let completedAsset = Object.assign({},
-        asset,
-        {
-          name: await token.name(),
-          symbol: await token.symbol(),
-          decimals: await token.decimals(),
-          balance: (await token.balance(options.accounts[asset.blockchain])).toString()
+      try {
+        let token = new Token(asset)
+        let completedAsset = Object.assign({},
+          asset,
+          {
+            name: await token.name(),
+            symbol: await token.symbol(),
+            decimals: await token.decimals(),
+            balance: (await token.balance(options.accounts[asset.blockchain])).toString()
+          }
+        )
+        if(completedAsset.balance != '0') {
+          if(exists({ assets, asset })) { return resolve() }
+          assets.push(completedAsset)
+          if(typeof options.drip == 'function') { options.drip(completedAsset) }
+          resolve(completedAsset)
+        } else {
+          resolve()
         }
-      )
-      if(completedAsset.balance != '0') {
-        if(exists({ assets, asset })) { return resolve() }
-        assets.push(completedAsset)
-        if(typeof options.drip == 'function') { options.drip(completedAsset) }
-        resolve(completedAsset)
-      } else {
+      } catch {
         resolve()
       }
     })
@@ -78,10 +82,9 @@ export default async (options) => {
             assets.push(assetWithBalance)
             if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
             resolve(assetWithBalance)
-        } else {
-          resolve()
-        }
-        }).catch((error)=>{ console.log(error) })
+          } else {
+            resolve()
+        }}).catch((error)=>{ console.log(error); resolve() })
     })
   })))
 
@@ -91,17 +94,17 @@ export default async (options) => {
     let allAssets = await getAssets(options)
     promises = promises.concat((allAssets.map((asset)=>{
       return new Promise((resolve, reject)=>{
-        return new Token(asset).balance(options.accounts[asset.blockchain]).then((balance)=>{
-          if(exists({ assets, asset })) { return resolve() }
-          const assetWithBalance = reduceAssetWithBalance(asset, balance)
-          if(assetWithBalance.balance != '0') {
-            assets.push(assetWithBalance)
-            if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
-            resolve(assetWithBalance)
-          } else {
-            resolve()
-          }
-        })
+        return new Token(asset).balance(options.accounts[asset.blockchain])
+          .then((balance)=>{
+            if(exists({ assets, asset })) { return resolve() }
+            const assetWithBalance = reduceAssetWithBalance(asset, balance)
+            if(assetWithBalance.balance != '0') {
+              assets.push(assetWithBalance)
+              if(typeof options.drip == 'function') { options.drip(assetWithBalance) }
+              resolve(assetWithBalance)
+            } else {
+              resolve()
+          }}).catch((error)=>{ console.log(error); resolve() })
       })
     })))
   }
