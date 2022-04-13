@@ -47,19 +47,22 @@ export default async (options) => {
   let assets = Promise.all(
     (Object.keys(options.accounts)).map((blockchain) =>{
 
-      const address = options.accounts[blockchain]
-      
-      return fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`)
-        .catch((error) => { console.log(error); resolve() })
-        .then((response) => response.json())
-        .then(async (assets) => {
-          return await ensureNativeTokenAsset({
-            address,
-            options,
-            assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
-            blockchain
+      return new Promise((resolve, reject)=>{
+        const address = options.accounts[blockchain]
+        fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`)
+          .catch((error) => { console.log(error); resolve() })
+          .then((response) => response.json())
+          .then(async (assets) => {
+            return await ensureNativeTokenAsset({
+              address,
+              options,
+              assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
+              blockchain
+            })
           })
-        }).catch((error) => { console.log(error) })
+          .then(resolve)
+          .catch((error) => { console.log(error); resolve() })
+      })
     }),
   ).then((responses) => responses.flat())
 
