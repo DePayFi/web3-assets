@@ -50,7 +50,7 @@ export default async (options) => {
       const address = options.accounts[blockchain]
       
       return fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`)
-        .catch((error) => { console.log(error) })
+        .catch((error) => { console.log(error); resolve() })
         .then((response) => response.json())
         .then(async (assets) => {
           return await ensureNativeTokenAsset({
