@@ -356,4 +356,60 @@ describe('getAssets', ()=>{
       expect(bscBalanceMock).toHaveBeenCalled()
     })
   })
+
+  describe('fetching assets fails', ()=> {
+
+    it('still resolves with nothing', async()=> {
+      let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
+      fetchMock.get({
+          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+        }, 502
+      )
+      fetchMock.get({
+          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+        }, [{
+          "name": "BNB",
+          "symbol": "BNB",
+          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "type": "NATIVE",
+          "balance": "1300000000000000000"
+        }, {
+          "name": "DePay",
+          "symbol": "DEPAY",
+          "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+          "type": "20",
+          "balance": "1000000000000000000"
+        }]
+      )
+
+      let assets = await getAssets({ accounts: { ethereum: address, bsc: address }})
+      expect(assets).toEqual([
+        {
+          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "balance": "1300000000000000000",
+          "blockchain": "bsc",
+          "name": "BNB",
+          "symbol": "BNB",
+          "type": "NATIVE",
+        },
+        {
+          "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+          "balance": "1000000000000000000",
+          "blockchain": "bsc",
+          "name": "DePay",
+          "symbol": "DEPAY",
+          "type": "20",
+        }
+      ])
+
+      fetchMock.get({
+          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          overwriteRoutes: true
+        }, 502
+      )
+
+      assets = await getAssets({ accounts: { ethereum: address, bsc: address }})
+      expect(assets).toEqual([])
+    })
+  })
 })

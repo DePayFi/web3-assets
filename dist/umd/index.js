@@ -53,7 +53,7 @@
         return new Promise((resolve, reject)=>{
           const address = options.accounts[blockchain];
           fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`)
-            .catch((error) => { console.log(error); resolve(); })
+            .catch((error) => { console.log(error); resolve([]); })
             .then((response) => response.json())
             .then(async (assets) => {
               return await ensureNativeTokenAsset({
@@ -64,7 +64,7 @@
               })
             })
             .then(resolve)
-            .catch((error) => { console.log(error); resolve(); });
+            .catch((error) => { console.log(error); resolve([]); });
         })
       }),
     ).then((responses) => responses.flat());
