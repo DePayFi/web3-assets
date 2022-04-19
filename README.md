@@ -118,6 +118,8 @@ let assets = await getAssets({
 //]
 ```
 
+Timeout happens after 10s and `[]` will be returned in cases the assets for the given addresses can't be retrieved within 10s.
+
 #### only (getAssets)
 
 Only gets assets and balances for given token addresses.
