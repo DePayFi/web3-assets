@@ -54,7 +54,7 @@ export default async (options) => {
         fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
           .catch((error) => { console.log(error); resolve([]) })
           .then((response) => {
-            if(response && response.success) {
+            if(response && response.ok) {
               return response.json()
             } else {
               resolve([])
