@@ -49,16 +49,26 @@ export default async (options) => {
 
       return new Promise((resolve, reject)=>{
         const address = options.accounts[blockchain]
-        fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`)
+        const controller = new AbortController()
+        setTimeout(()=>controller.abort(), 10000)
+        fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
           .catch((error) => { console.log(error); resolve([]) })
-          .then((response) => response.json())
+          .then((response) => {
+            if(response && response.success) {
+              return response.json()
+            } else {
+              resolve([])
+            }
+          })
           .then(async (assets) => {
-            return await ensureNativeTokenAsset({
-              address,
-              options,
-              assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
-              blockchain
-            })
+            if(assets && assets.length) {
+              return await ensureNativeTokenAsset({
+                address,
+                options,
+                assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
+                blockchain
+              })
+            }
           })
           .then(resolve)
           .catch((error) => { console.log(error); resolve([]) })

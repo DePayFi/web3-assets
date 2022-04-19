@@ -51,9 +51,17 @@ var getAssets = async (options) => {
 
       return new Promise((resolve, reject)=>{
         const address = options.accounts[blockchain];
-        fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`)
+        const controller = new AbortController();
+        setTimeout(()=>controller.abort(), 10000);
+        fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
           .catch((error) => { console.log(error); resolve([]); })
-          .then((response) => response.json())
+          .then((response) => {
+            if(response.success) {
+              return response.json()
+            } else {
+              resolve([]);
+            }
+          })
           .then(async (assets) => {
             return await ensureNativeTokenAsset({
               address,
