@@ -57,19 +57,21 @@
           fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
             .catch((error) => { console.log(error); resolve([]); })
             .then((response) => {
-              if(response.success) {
+              if(response && response.success) {
                 return response.json()
               } else {
                 resolve([]);
               }
             })
             .then(async (assets) => {
-              return await ensureNativeTokenAsset({
-                address,
-                options,
-                assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
-                blockchain
-              })
+              if(assets && assets.length) {
+                return await ensureNativeTokenAsset({
+                  address,
+                  options,
+                  assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
+                  blockchain
+                })
+              }
             })
             .then(resolve)
             .catch((error) => { console.log(error); resolve([]); });
