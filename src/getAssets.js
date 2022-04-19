@@ -68,6 +68,8 @@ export default async (options) => {
                 assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
                 blockchain
               })
+            } else {
+              resolve([])
             }
           })
           .then(resolve)
