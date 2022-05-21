@@ -46,7 +46,23 @@ describe('getAssets', ()=>{
           "balance": "1000000000000000000"
         }]
       )
-      expect(await getAssets({ accounts: { ethereum: address, bsc: address } })).toEqual([
+      fetchMock.get({
+          url: `https://public.depay.fi/accounts/polygon/${address}/assets`,
+        }, [{
+          "name": "Matic",
+          "symbol": "Matic",
+          "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+          "type": "NATIVE",
+          "balance": "1100000000000000000"
+        }, {
+          "name": "DePay",
+          "symbol": "DEPAY",
+          "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+          "type": "20",
+          "balance": "1100000000000000000"
+        }]
+      )
+      expect(await getAssets({ accounts: { ethereum: address, bsc: address, polygon: address } })).toEqual([
         {
           name: 'Ether',
           symbol: 'ETH',
@@ -78,6 +94,22 @@ describe('getAssets', ()=>{
           type: '20',
           balance: '1000000000000000000',
           blockchain: 'bsc'
+        },
+        {
+          name: 'Matic',
+          symbol: 'Matic',
+          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          type: 'NATIVE',
+          balance: '1100000000000000000',
+          blockchain: 'polygon'
+        },
+        {
+          name: 'DePay',
+          symbol: 'DEPAY',
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          type: '20',
+          balance: '1100000000000000000',
+          blockchain: 'polygon'
         }
       ])
     })
