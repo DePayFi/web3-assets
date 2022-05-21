@@ -13,7 +13,7 @@ describe('dripAssets', ()=>{
   afterEach(resetMocks)
 
   const accounts = ['0xEcA533Ef096f191A35DE76aa4580FA3A722724bE']
-  const blockchains = ['ethereum', 'bsc']
+  const blockchains = ['ethereum', 'bsc', 'polygon']
 
   beforeEach(()=>{
     blockchains.forEach((blockchain)=>{
@@ -61,6 +61,23 @@ describe('dripAssets', ()=>{
         "decimals": 18
       }]
     )
+
+    fetchMock.get({ url: `https://public.depay.fi/accounts/polygon/${accounts[0]}/assets` },
+      [{
+        "name": "Matic",
+        "symbol": "MATIC",
+        "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "type": "NATIVE",
+        "balance": "2100000000000000000"
+      }, {
+         "name": "DePay",
+        "symbol": "DEPAY",
+        "address": "0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb",
+        "type": "20",
+        "balance": "1000000000000000000",
+        "decimals": 18
+      }]
+    )
   })
 
   describe('drips assets for given accounts (first all major tokens per blockchain, then all further assets)', ()=>{
@@ -70,14 +87,14 @@ describe('dripAssets', ()=>{
       let dripsCount = 0
       
       let allAssets = await dripAssets({ 
-        accounts: { ethereum: accounts[0], bsc: accounts[0] },
+        accounts: { ethereum: accounts[0], bsc: accounts[0], polygon: accounts[0] },
         drip: (asset)=>{
           dripsCount++
           drippedAssets.push(asset)
         }
       })
 
-      expect(dripsCount).toEqual(20)
+      expect(dripsCount).toEqual(29)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -95,6 +112,15 @@ describe('dripAssets', ()=>{
           decimals: 18,
           type: 'NATIVE',
           blockchain: 'bsc',
+          balance: '123456789'
+        },
+        {
+          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          symbol: 'MATIC',
+          name: 'Polygon',
+          decimals: 18,
+          type: 'NATIVE',
+          blockchain: 'polygon',
           balance: '123456789'
         },
         {
@@ -242,6 +268,69 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
+          address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+          symbol: 'WMATIC',
+          name: 'Wrapped Matic',
+          decimals: 18,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
+          address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+          symbol: 'WETH',
+          name: 'Wrapped Ether',
+          decimals: 18,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
+          address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
+          address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+          symbol: 'USDT',
+          name: 'Tether USD',
+          decimals: 6,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
+          address: '0xa3Fa99A148fA48D14Ed51d610c367C61876997F1',
+          symbol: 'miMATIC',
+          name: 'miMATIC',
+          decimals: 18,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
+          address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+          symbol: 'DAI',
+          name: 'Dai Stablecoin',
+          decimals: 18,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
+          address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+          symbol: 'WBTC',
+          name: 'Wrapped BTC',
+          decimals: 8,
+          type: '20',
+          blockchain: 'polygon',
+          balance: '123456789'
+        },
+        {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
           balance: '56789',
           blockchain: 'ethereum',
@@ -254,6 +343,15 @@ describe('dripAssets', ()=>{
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
           balance: '56789',
           blockchain: 'bsc',
+          decimals: 18,
+          name: 'DePay',
+          symbol: 'DEPAY',
+          type: '20'
+        },
+        {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          balance: '56789',
+          blockchain: 'polygon',
           decimals: 18,
           name: 'DePay',
           symbol: 'DEPAY',
