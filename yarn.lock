@@ -901,20 +901,20 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-5.0.1.tgz#f0821b32fb5dedfa5d3707c862e71fc15dbad6a3"
   integrity sha512-VP+i78HyAZamDxnrBUXAJAyubusbgDruDGKXKa0OnMQ+/1FT2gYn/DsTw+o/KFC/Vrc7JLk0FyUjygggm9S02Q==
 
-"@depay/web3-client@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-client/-/web3-client-8.4.0.tgz#6d5435d5782e2a4dbf1010fc42c4b55cbbbaeeea"
-  integrity sha512-xy7GM5D56SlVlHNm+w916az4rCa7WC0dgte8l77ZTpWw7+c3LYQoWu7MsNYacaVpYouDDfue9JayBEZ58QwMWA==
+"@depay/web3-client@^8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-client/-/web3-client-8.5.0.tgz#b3f803d565818a20625a8e26bf1300a43ed254b7"
+  integrity sha512-9zKNmbxPZjDcF2UvHqREvDu4AbZyKGgcCC1kdqLbHvUSu37PQPI0ktPB5FqiX+Kd8T6/FIKmUHvOu6jntvZRxA==
 
 "@depay/web3-constants@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-6.0.0.tgz#78d1eb5c1fc97a8b67f769a6b471a31cdb852db1"
   integrity sha512-BlXhlSRbwUsPypyw7+Mndep6flnQNXLUdqpirrH0OCRRBRUS3l2Ta/XwIVaDpcgj8qmPtRQhEC1piTgni4zEpg==
 
-"@depay/web3-mock@^11.8.1":
-  version "11.10.2"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-11.10.2.tgz#311550ee0b3a710b26a335f482871bd30ead71a5"
-  integrity sha512-gdId9K9K8ssMOCCW5PTxkYSTP2HZ6eNzn9V/xPUFTnh2yYJnxJnkyw5L9E0pDH2O3dc5JEziSQovl4u7XKJp7w==
+"@depay/web3-mock@^11.11.0":
+  version "11.11.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-11.11.0.tgz#bca1f2600da6cecc7138a0acb6a61d475eb8d171"
+  integrity sha512-Ngaf2/sRiypqlW4WXzH4hVuFCTb2IhgxAb430/UfcmOFnmAEdGznd6aa9HgSAJ8HfIAW5isLvGyyQ1M+dmqgfA==
 
 "@depay/web3-tokens@^8.1.0":
   version "8.1.0"
