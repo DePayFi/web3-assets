@@ -28,7 +28,7 @@ describe('dripAssets', ()=>{
       mock({ call: { return: '56789', to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain })
     })
 
-    fetchMock.get({ url: `https://public.depay.fi/accounts/ethereum/${accounts[0]}/assets` },
+    fetchMock.get({ url: `https://public.depay.com/accounts/ethereum/${accounts[0]}/assets` },
       [{
         "name": "Ether",
         "symbol": "ETH",
@@ -45,7 +45,7 @@ describe('dripAssets', ()=>{
       }]
     )
 
-    fetchMock.get({ url: `https://public.depay.fi/accounts/bsc/${accounts[0]}/assets` },
+    fetchMock.get({ url: `https://public.depay.com/accounts/bsc/${accounts[0]}/assets` },
       [{
         "name": "BNB Coin",
         "symbol": "BNB",
@@ -62,7 +62,7 @@ describe('dripAssets', ()=>{
       }]
     )
 
-    fetchMock.get({ url: `https://public.depay.fi/accounts/polygon/${accounts[0]}/assets` },
+    fetchMock.get({ url: `https://public.depay.com/accounts/polygon/${accounts[0]}/assets` },
       [{
         "name": "Matic",
         "symbol": "MATIC",
@@ -805,7 +805,7 @@ describe('dripAssets', ()=>{
     
     it('completes drip', async ()=>{
 
-      fetchMock.get({ url: `https://public.depay.fi/accounts/ethereum/${accounts[0]}/assets`, overwriteRoutes: true }, 502)
+      fetchMock.get({ url: `https://public.depay.com/accounts/ethereum/${accounts[0]}/assets`, overwriteRoutes: true }, 502)
 
       let drippedAssets = []
       let dripsCount = 0

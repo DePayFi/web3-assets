@@ -15,7 +15,7 @@ describe('getAssets', ()=>{
     it('fetches the assets for a given account without any connected wallet', async()=> {
       let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+          url: `https://public.depay.com/accounts/ethereum/${address}/assets`,
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -31,7 +31,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
         }, [{
           "name": "BNB",
           "symbol": "BNB",
@@ -47,7 +47,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/polygon/${address}/assets`,
+          url: `https://public.depay.com/accounts/polygon/${address}/assets`,
         }, [{
           "name": "Matic",
           "symbol": "Matic",
@@ -120,7 +120,7 @@ describe('getAssets', ()=>{
     it('only fetches the requested assets (Type 20 Tokens)', async()=> {
       let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+          url: `https://public.depay.com/accounts/ethereum/${address}/assets`,
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -136,7 +136,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
         }, [{
           "name": "BNB",
           "symbol": "BNB",
@@ -174,7 +174,7 @@ describe('getAssets', ()=>{
     it('only fetches the requested assets (NATIVE Tokens)', async()=> {
       let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+          url: `https://public.depay.com/accounts/ethereum/${address}/assets`,
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -190,7 +190,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
         }, [{
           "name": "BNB",
           "symbol": "BNB",
@@ -231,7 +231,7 @@ describe('getAssets', ()=>{
     it('excludes assets (Type 20 Tokens)', async()=> {
       let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+          url: `https://public.depay.com/accounts/ethereum/${address}/assets`,
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -247,7 +247,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
         }, [{
           "name": "BNB",
           "symbol": "BNB",
@@ -285,7 +285,7 @@ describe('getAssets', ()=>{
     it('excludes assets (NATIVE Tokens)', async()=> {
       let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+          url: `https://public.depay.com/accounts/ethereum/${address}/assets`,
         }, [{
           "name": "Ether",
           "symbol": "ETH",
@@ -301,7 +301,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
         }, [{
           "name": "BNB",
           "symbol": "BNB",
@@ -342,7 +342,7 @@ describe('getAssets', ()=>{
     beforeEach(()=>{
       mock({ blockchain: 'ethereum', wallet: 'metamask' })
       fetchMock.get({
-          url: 'https://public.depay.fi/accounts/ethereum/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
+          url: 'https://public.depay.com/accounts/ethereum/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
         }, [{
           "name": "Dai Stablecoin",
           "symbol": "DAI",
@@ -351,7 +351,7 @@ describe('getAssets', ()=>{
         }]
       )
       fetchMock.get({
-          url: 'https://public.depay.fi/accounts/bsc/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
+          url: 'https://public.depay.com/accounts/bsc/0xd8da6bf26964af9d7eed9e03e53415d37aa96045/assets',
         }, [{
           "name": "PancakeSwap",
           "symbol": "CAKE",
@@ -394,11 +394,11 @@ describe('getAssets', ()=>{
     it('still resolves with nothing', async()=> {
       let address = '0xEcA533Ef096f191A35DE76aa4580FA3A722724bE'
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/ethereum/${address}/assets`,
+          url: `https://public.depay.com/accounts/ethereum/${address}/assets`,
         }, 502
       )
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
         }, [{
           "name": "BNB",
           "symbol": "BNB",
@@ -435,7 +435,7 @@ describe('getAssets', ()=>{
       ])
 
       fetchMock.get({
-          url: `https://public.depay.fi/accounts/bsc/${address}/assets`,
+          url: `https://public.depay.com/accounts/bsc/${address}/assets`,
           overwriteRoutes: true
         }, 502
       )

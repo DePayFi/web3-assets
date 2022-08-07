@@ -51,7 +51,7 @@ export default async (options) => {
         const address = options.accounts[blockchain]
         const controller = new AbortController()
         setTimeout(()=>controller.abort(), 10000)
-        fetch(`https://public.depay.fi/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
+        fetch(`https://public.depay.com/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
           .catch((error) => { console.log(error); resolve([]) })
           .then((response) => {
             if(response && response.ok) {
