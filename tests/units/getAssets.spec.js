@@ -1,13 +1,17 @@
 import fetchMock from 'fetch-mock'
 import { getAssets } from 'src'
 import { mock, resetMocks } from '@depay/web3-mock'
-import { provider, resetCache } from '@depay/web3-client'
+import { getProvider, resetCache } from '@depay/web3-client'
 
 describe('getAssets', ()=>{
 
-  beforeEach(()=>fetchMock.reset())
-  beforeEach(resetMocks)
-  beforeEach(resetCache)
+  let provider
+
+  beforeEach(()=>{
+    resetMocks()
+    resetCache()
+    fetchMock.reset()
+  })
   afterEach(resetMocks)
   
   describe('fetch assets for given accounts', ()=>{
@@ -362,16 +366,20 @@ describe('getAssets', ()=>{
     })
 
     it('ensures fetching asset for NATIVE currency if it was missing in the api response', async()=> {
+      
+      provider = await getProvider('ethereum')
       let ethereumBalanceMock = mock({ 
-        provider: provider('ethereum'),
+        provider,
         blockchain: 'ethereum',
         balance: {
           for: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
           return: '22222221'
         }
       })
+
+      provider = await getProvider('bsc')
       let bscBalanceMock = mock({ 
-        provider: provider('bsc'),
+        provider,
         blockchain: 'bsc',
         balance: {
           for: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',

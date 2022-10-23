@@ -2,7 +2,7 @@ import fetchMock from 'fetch-mock'
 import { Blockchain } from '@depay/web3-blockchains'
 import { dripAssets } from 'src'
 import { mock, resetMocks } from '@depay/web3-mock'
-import { provider as providerFor, resetCache } from '@depay/web3-client'
+import { getProvider, resetCache } from '@depay/web3-client'
 import { Token } from '@depay/web3-tokens'
 
 describe('dripAssets', ()=>{
@@ -14,18 +14,20 @@ describe('dripAssets', ()=>{
 
   const accounts = ['0xEcA533Ef096f191A35DE76aa4580FA3A722724bE']
   const blockchains = ['ethereum', 'bsc', 'polygon']
+  let provider
 
   beforeEach(()=>{
-    blockchains.forEach((blockchain)=>{
-      const provider = providerFor(blockchain)
+    
+    blockchains.forEach(async (blockchain)=>{
+      provider = await getProvider(blockchain)
       mock({ accounts: { return: accounts }, provider, blockchain })
       mock({ balance: { for: accounts[0], return: '123456789' }, provider, blockchain })
       Blockchain.findByName(blockchain).tokens.forEach((token)=>{
         if(token.type == '20') {
-          mock({ call: { return: '123456789', to: token.address, api: Token[blockchain].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain })
+          mock({ request: { return: '123456789', to: token.address, api: Token[blockchain].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain })
         }
       })
-      mock({ call: { return: '56789', to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain })
+      mock({ request: { return: '56789', to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain })
     })
 
     fetchMock.get({ url: `https://public.depay.com/accounts/ethereum/${accounts[0]}/assets` },
@@ -94,7 +96,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(29)
+      expect(dripsCount).toEqual(28)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -172,15 +174,6 @@ describe('dripAssets', ()=>{
           address: '0x853d955aCEf822Db058eb8505911ED77F175b99e',
           symbol: 'FRAX',
           name: 'Frax',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
-          address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53',
-          symbol: 'BUSD',
-          name: 'Binance USD',
           decimals: 18,
           type: '20',
           blockchain: 'ethereum',
@@ -422,7 +415,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(17)
+      expect(dripsCount).toEqual(16)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -473,15 +466,6 @@ describe('dripAssets', ()=>{
           address: '0x853d955aCEf822Db058eb8505911ED77F175b99e',
           symbol: 'FRAX',
           name: 'Frax',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
-          address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53',
-          symbol: 'BUSD',
-          name: 'Binance USD',
           decimals: 18,
           type: '20',
           blockchain: 'ethereum',
@@ -590,21 +574,23 @@ describe('dripAssets', ()=>{
       let drippedAssets = []
       let dripsCount = 0
 
-      blockchains.forEach((blockchain)=>{
-        const provider = providerFor(blockchain)
-        mock({ call: { return: 'DePay', to: '0xa0bed124a09ac2bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'name' }, provider, blockchain })
-        mock({ call: { return: 'DEPAY', to: '0xa0bed124a09ac2bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'symbol' }, provider, blockchain })
-        mock({ call: { return: 18, to: '0xa0bed124a09ac2bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'decimals' }, provider, blockchain })
+      blockchains.forEach(async (blockchain)=>{
+        provider = await getProvider(blockchain)
+        mock({ request: { return: 'DePay', to: '0xa0bed124a09ac2bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'name' }, provider, blockchain })
+        mock({ request: { return: 'DEPAY', to: '0xa0bed124a09ac2bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'symbol' }, provider, blockchain })
+        mock({ request: { return: 18, to: '0xa0bed124a09ac2bd941b10349d8d224fe3c955eb', api: Token[blockchain].DEFAULT, method: 'decimals' }, provider, blockchain })
       })
 
-      mock({ call: { return: 'Wrapped Ether', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'name' }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
-      mock({ call: { return: 'WETH', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'symbol' }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
-      mock({ call: { return: 18, to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'decimals' }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
-      mock({ call: { return: '0', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider: providerFor('ethereum'), blockchain: 'ethereum' })
+      provider = await getProvider('ethereum')
+      mock({ request: { return: 'Wrapped Ether', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'name' }, provider, blockchain: 'ethereum' })
+      mock({ request: { return: 'WETH', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'symbol' }, provider, blockchain: 'ethereum' })
+      mock({ request: { return: 18, to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'decimals' }, provider, blockchain: 'ethereum' })
+      mock({ request: { return: '0', to: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', api: Token['ethereum'].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain: 'ethereum' })
 
-      mock({ call: { return: 'Wrapped BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'name' }, provider: providerFor('bsc'), blockchain: 'bsc' })
-      mock({ call: { return: 'BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'symbol' }, provider: providerFor('bsc'), blockchain: 'bsc' })
-      mock({ call: { return: 18, to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'decimals' }, provider: providerFor('bsc'), blockchain: 'bsc' })
+      provider = await getProvider('bsc')
+      mock({ request: { return: 'Wrapped BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'name' }, provider, blockchain: 'bsc' })
+      mock({ request: { return: 'BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'symbol' }, provider, blockchain: 'bsc' })
+      mock({ request: { return: 18, to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'decimals' }, provider, blockchain: 'bsc' })
       
       let allAssets = await dripAssets({ 
         accounts: { ethereum: accounts[0], bsc: accounts[0] },
@@ -620,7 +606,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(19)
+      expect(dripsCount).toEqual(18)
 
       let expectedAssets = [
         {
@@ -681,15 +667,6 @@ describe('dripAssets', ()=>{
           address: '0x853d955aCEf822Db058eb8505911ED77F175b99e',
           symbol: 'FRAX',
           name: 'Frax',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
-          address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53',
-          symbol: 'BUSD',
-          name: 'Binance USD',
           decimals: 18,
           type: '20',
           blockchain: 'ethereum',
@@ -818,7 +795,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(19)
+      expect(dripsCount).toEqual(18)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -887,15 +864,6 @@ describe('dripAssets', ()=>{
           address: '0x853d955aCEf822Db058eb8505911ED77F175b99e',
           symbol: 'FRAX',
           name: 'Frax',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
-          address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53',
-          symbol: 'BUSD',
-          name: 'Binance USD',
           decimals: 18,
           type: '20',
           blockchain: 'ethereum',
