@@ -77,6 +77,14 @@ This library supports the following blockchains:
 - [BNB Smart Chain](https://www.binance.org/smartChain)
 - [Polygon](https://polygon.technology)
 
+## Platform specific packaging
+
+In case you want to use and package only specific platforms, use the platform-specific package:
+
+```javascript
+import { getAssets } from '@depay/web3-assets'
+```
+
 ## Functionalities
 
 ### getAssets
