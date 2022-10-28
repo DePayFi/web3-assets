@@ -1,0 +1,203 @@
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-constants'), require('@depay/web3-client-evm'), require('@depay/web3-blockchains'), require('@depay/web3-tokens-evm')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-constants', '@depay/web3-client-evm', '@depay/web3-blockchains', '@depay/web3-tokens-evm'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Assets = {}, global.Web3Constants, global.Web3Client, global.Web3Blockchains, global.Web3Tokens));
+}(this, (function (exports, web3Constants, web3ClientEvm, web3Blockchains, web3TokensEvm) { 'use strict';
+
+  const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
+    if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+    if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+
+    const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()));
+    if(nativeTokenMissing) {
+      let balance = await web3ClientEvm.request(
+        {
+          blockchain: blockchain,
+          address,
+          method: 'balance',
+        },
+        { cache: 30000 }
+      );
+      assets = [{
+        name: web3Constants.CONSTANTS[blockchain].CURRENCY,
+        symbol: web3Constants.CONSTANTS[blockchain].SYMBOL,
+        address: web3Constants.CONSTANTS[blockchain].NATIVE,
+        type: 'NATIVE',
+        blockchain,
+        balance: balance.toString()
+      }, ...assets];
+    }
+    return assets
+  };
+
+  const filterAssets = ({ assets, blockchain, options })=>{
+    if(options.only) {
+      return assets.filter((asset)=>{
+        return (options.only[blockchain] || []).find((onlyAsset)=>(onlyAsset.toLowerCase() == asset.address.toLowerCase()))
+      })
+    } else if(options.exclude) {
+      return assets.filter((asset)=>{
+        return (options.exclude[blockchain] || []).find((excludeAsset)=>(excludeAsset.toLowerCase() != asset.address.toLowerCase()))
+      })
+    } else {
+      return assets
+    }
+  };
+
+  var getAssets = async (options) => {
+    if(options === undefined) { options = { accounts: {} }; }
+
+    let assets = Promise.all(
+      (Object.keys(options.accounts)).map((blockchain) =>{
+
+        return new Promise((resolve, reject)=>{
+          const address = options.accounts[blockchain];
+          const controller = new AbortController();
+          setTimeout(()=>controller.abort(), 10000);
+          fetch(`https://public.depay.com/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
+            .catch((error) => { console.log(error); resolve([]); })
+            .then((response) => {
+              if(response && response.ok) {
+                return response.json()
+              } else {
+                resolve([]);
+              }
+            })
+            .then(async (assets) => {
+              if(assets && assets.length) {
+                return await ensureNativeTokenAsset({
+                  address,
+                  options,
+                  assets: filterAssets({ assets, blockchain, options }).map((asset) => Object.assign(asset, { blockchain })),
+                  blockchain
+                })
+              } else {
+                resolve([]);
+              }
+            })
+            .then(resolve)
+            .catch((error) => { console.log(error); resolve([]); });
+        })
+      }),
+    ).then((responses) => responses.flat());
+
+    return assets
+  };
+
+  const reduceAssetWithBalance = (asset, balance)=>{
+    return Object.assign({}, {
+      address: asset.address,
+      symbol: asset.symbol,
+      name: asset.name,
+      decimals: asset.decimals,
+      type: asset.type,
+      blockchain: asset.blockchain
+    }, { balance: balance.toString() })
+  };
+
+  const exists = ({ assets, asset })=> {
+    return !!assets.find(element => element.blockchain == asset.blockchain && element.address.toLowerCase() == asset.address.toLowerCase())
+  };
+
+  const isFiltered = ({ options, address, blockchain })=> {
+    if(options && options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>only.toLowerCase()==address.toLowerCase())){ 
+      return true 
+    }
+    if(options && options.exclude && options.exclude[blockchain] && options.exclude[blockchain].find((only)=>only.toLowerCase()==address.toLowerCase())){
+      return true 
+    }
+    return false
+  };
+
+  var dripAssets_evm = async (options) => {
+    if(options === undefined) { options = { accounts: {}, priority: [] }; }
+
+    let assets = [];
+    let promises = [];
+
+    // Prioritized Assets
+    
+    promises = promises.concat((options.priority || []).map((asset)=>{
+      return new Promise(async (resolve, reject)=>{
+        try {
+          let token = new web3TokensEvm.Token(asset);
+          let completedAsset = Object.assign({},
+            asset,
+            {
+              name: await token.name(),
+              symbol: await token.symbol(),
+              decimals: await token.decimals(),
+              balance: (await token.balance(options.accounts[asset.blockchain])).toString()
+            }
+          );
+          if(completedAsset.balance != '0') {
+            if(exists({ assets, asset })) { return resolve() }
+            assets.push(completedAsset);
+            if(typeof options.drip == 'function') { options.drip(completedAsset); }
+            resolve(completedAsset);
+          } else {
+            resolve();
+          }
+        } catch (e) {
+          resolve();
+        }
+      })
+    }));
+    
+    // Major Tokens
+    
+    let majorTokens = [];
+    for (var blockchain in options.accounts){
+      web3Blockchains.Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+        if(isFiltered({ options, address: token.address, blockchain })){ return }
+        majorTokens.push(Object.assign({}, token, { blockchain }));
+      });
+    }
+    promises = promises.concat((majorTokens.map((asset)=>{
+      return new Promise((resolve, reject)=>{
+        new web3TokensEvm.Token(asset).balance(options.accounts[asset.blockchain])
+          .then((balance)=>{
+            if(exists({ assets, asset })) { return resolve() }
+            const assetWithBalance = reduceAssetWithBalance(asset, balance);
+            if(assetWithBalance.balance != '0') {
+              assets.push(assetWithBalance);
+              if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
+              resolve(assetWithBalance);
+            } else {
+              resolve();
+          }}).catch((error)=>{ console.log(error); resolve(); });
+      })
+    })));
+
+    // All other assets
+
+    if(options.only == undefined || Object.keys(options.only).every((list)=>list.length == 0)) {
+      let allAssets = await getAssets(options);
+      promises = promises.concat((allAssets.map((asset)=>{
+        return new Promise((resolve, reject)=>{
+          return new web3TokensEvm.Token(asset).balance(options.accounts[asset.blockchain])
+            .then((balance)=>{
+              if(exists({ assets, asset })) { return resolve() }
+              const assetWithBalance = reduceAssetWithBalance(asset, balance);
+              if(assetWithBalance.balance != '0') {
+                assets.push(assetWithBalance);
+                if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
+                resolve(assetWithBalance);
+              } else {
+                resolve();
+            }}).catch((error)=>{ console.log(error); resolve(); })
+        })
+      })));
+    }
+
+    await Promise.all(promises);
+
+    return assets
+  };
+
+  exports.dripAssets = dripAssets_evm;
+  exports.getAssets = getAssets;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
