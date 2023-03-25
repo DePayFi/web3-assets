@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock'
-import { getAssets } from 'src/index.evm'
+import { getAssets } from 'dist/esm/index.evm'
 import { mock, resetMocks } from '@depay/web3-mock'
 import { getProvider, resetCache } from '@depay/web3-client-evm'
 

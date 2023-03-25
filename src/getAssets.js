@@ -1,11 +1,24 @@
-import { CONSTANTS } from '@depay/web3-constants'
+/*#if _EVM
+
+import { request } from '@depay/web3-client-evm'
+
+/*#elif _SOLANA
+
+import { request } from '@depay/web3-client-solana'
+
+//#else */
+
 import { request } from '@depay/web3-client'
 
-const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
-  if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
-  if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+//#endif
 
-  const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))
+import Blockchains from '@depay/web3-blockchains'
+
+const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
+  if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()))){ return assets }
+  if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()))){ return assets }
+
+  const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()))
   if(nativeTokenMissing) {
     let balance = await request(
       {
@@ -16,9 +29,9 @@ const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) 
       { cache: 30000 }
     )
     assets = [{
-      name: CONSTANTS[blockchain].CURRENCY,
-      symbol: CONSTANTS[blockchain].SYMBOL,
-      address: CONSTANTS[blockchain].NATIVE,
+      name: Blockchains[blockchain].currency.name,
+      symbol: Blockchains[blockchain].currency.symbol,
+      address: Blockchains[blockchain].currency.address,
       type: 'NATIVE',
       blockchain,
       balance: balance.toString()

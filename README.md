@@ -76,13 +76,24 @@ This library supports the following blockchains:
 - [Ethereum](https://ethereum.org)
 - [BNB Smart Chain](https://www.binance.org/smartChain)
 - [Polygon](https://polygon.technology)
+- [Solana](https://solana.com)
+- [Fantom](https://fantom.foundation)
+- [Velas](https://velas.com)
 
 ## Platform specific packaging
 
 In case you want to use and package only specific platforms, use the platform-specific package:
 
+### EVM platform specific packaging
+
 ```javascript
-import { getAssets } from '@depay/web3-assets'
+import { getAssets } from '@depay/web3-assets-evm'
+```
+
+### Solana platform specific packaging
+
+```javascript
+import { getAssets } from '@depay/web3-assets-solana'
 ```
 
 ## Functionalities

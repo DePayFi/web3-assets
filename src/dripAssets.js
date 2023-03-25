@@ -1,6 +1,19 @@
-import getAssets from './getAssets'
-import { Blockchain } from '@depay/web3-blockchains'
+/*#if _EVM
+
+import { Token } from '@depay/web3-tokens-evm'
+
+/*#elif _SOLANA
+
+import { Token } from '@depay/web3-tokens-solana'
+
+//#else */
+
 import { Token } from '@depay/web3-tokens'
+
+//#endif
+
+import Blockchains from '@depay/web3-blockchains'
+import getAssets from './getAssets'
 
 const reduceAssetWithBalance = (asset, balance)=>{
   return Object.assign({}, {
@@ -66,7 +79,7 @@ export default async (options) => {
   
   let majorTokens = []
   for (var blockchain in options.accounts){
-    Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+    Blockchains.findByName(blockchain).tokens.forEach((token)=>{
       if(isFiltered({ options, address: token.address, blockchain })){ return }
       majorTokens.push(Object.assign({}, token, { blockchain }))
     })

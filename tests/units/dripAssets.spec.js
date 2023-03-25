@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock'
-import { Blockchain } from '@depay/web3-blockchains'
+import Blockchains from '@depay/web3-blockchains'
 import { dripAssets } from 'src'
 import { mock, resetMocks } from '@depay/web3-mock'
 import { getProvider, resetCache } from '@depay/web3-client'
@@ -22,7 +22,7 @@ describe('dripAssets', ()=>{
       provider = await getProvider(blockchain)
       mock({ accounts: { return: accounts }, provider, blockchain })
       mock({ balance: { for: accounts[0], return: '123456789' }, provider, blockchain })
-      Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+      Blockchains.findByName(blockchain).tokens.forEach((token)=>{
         if(token.type == '20') {
           mock({ request: { return: '123456789', to: token.address, api: Token[blockchain].DEFAULT, method: 'balanceOf', params: accounts[0] }, provider, blockchain })
         }
@@ -198,6 +198,15 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          balance: '56789',
+          blockchain: 'ethereum',
+          decimals: 18,
+          name: 'DePay',
+          symbol: 'DEPAY',
+          type: '20'
+        },
+        {
           address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
           symbol: 'WBNB',
           name: 'Wrapped BNB',
@@ -261,6 +270,15 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          balance: '56789',
+          blockchain: 'bsc',
+          decimals: 18,
+          name: 'DePay',
+          symbol: 'DEPAY',
+          type: '20'
+        },
+        {
           address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
           symbol: 'WMATIC',
           name: 'Wrapped Matic',
@@ -322,24 +340,6 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'polygon',
           balance: '123456789'
-        },
-        {
-          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
-          balance: '56789',
-          blockchain: 'ethereum',
-          decimals: 18,
-          name: 'DePay',
-          symbol: 'DEPAY',
-          type: '20'
-        },
-        {
-          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
-          balance: '56789',
-          blockchain: 'bsc',
-          decimals: 18,
-          name: 'DePay',
-          symbol: 'DEPAY',
-          type: '20'
         },
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
@@ -490,6 +490,15 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          balance: '56789',
+          blockchain: 'ethereum',
+          decimals: 18,
+          name: 'DePay',
+          symbol: 'DEPAY',
+          type: '20'
+        },
+        {
           address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
           symbol: 'WBNB',
           name: 'Wrapped BNB',
@@ -542,15 +551,6 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'bsc',
           balance: '123456789'
-        },
-        {
-          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
-          balance: '56789',
-          blockchain: 'ethereum',
-          decimals: 18,
-          name: 'DePay',
-          symbol: 'DEPAY',
-          type: '20'
         },
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
@@ -691,6 +691,15 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          symbol: 'DEPAY',
+          name: 'DePay',
+          decimals: 18,
+          type: '20',
+          blockchain: 'ethereum',
+          balance: '56789'
+        },
+        {
           address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
           symbol: 'WBNB',
           name: 'Wrapped BNB',
@@ -759,15 +768,6 @@ describe('dripAssets', ()=>{
           name: 'DePay',
           decimals: 18,
           type: '20',
-          blockchain: 'ethereum',
-          balance: '56789'
-        },
-        {
-          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
-          symbol: 'DEPAY',
-          name: 'DePay',
-          decimals: 18,
-          type: '20',
           blockchain: 'bsc',
           balance: '56789'
         }
@@ -795,7 +795,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(18)
+      expect(dripsCount).toEqual(19)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',

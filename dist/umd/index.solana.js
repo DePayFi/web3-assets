@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-client-evm'), require('@depay/web3-blockchains'), require('@depay/web3-tokens-evm')) :
-  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-client-evm', '@depay/web3-blockchains', '@depay/web3-tokens-evm'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-client-solana'), require('@depay/web3-blockchains'), require('@depay/web3-tokens-solana')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-client-solana', '@depay/web3-blockchains', '@depay/web3-tokens-solana'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Assets = {}, global.Web3Client, global.Web3Blockchains, global.Web3Tokens));
-}(this, (function (exports, web3ClientEvm, Blockchains, web3TokensEvm) { 'use strict';
+}(this, (function (exports, web3ClientSolana, Blockchains, web3TokensSolana) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -14,7 +14,7 @@
 
     const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == Blockchains__default['default'][blockchain].currency.address.toLowerCase()));
     if(nativeTokenMissing) {
-      let balance = await web3ClientEvm.request(
+      let balance = await web3ClientSolana.request(
         {
           blockchain: blockchain,
           address,
@@ -124,7 +124,7 @@
     promises = promises.concat((options.priority || []).map((asset)=>{
       return new Promise(async (resolve, reject)=>{
         try {
-          let token = new web3TokensEvm.Token(asset);
+          let token = new web3TokensSolana.Token(asset);
           let completedAsset = Object.assign({},
             asset,
             {
@@ -159,7 +159,7 @@
     }
     promises = promises.concat((majorTokens.map((asset)=>{
       return new Promise((resolve, reject)=>{
-        new web3TokensEvm.Token(asset).balance(options.accounts[asset.blockchain])
+        new web3TokensSolana.Token(asset).balance(options.accounts[asset.blockchain])
           .then((balance)=>{
             if(exists({ assets, asset })) { return resolve() }
             const assetWithBalance = reduceAssetWithBalance(asset, balance);
@@ -179,7 +179,7 @@
       let allAssets = await getAssets(options);
       promises = promises.concat((allAssets.map((asset)=>{
         return new Promise((resolve, reject)=>{
-          return new web3TokensEvm.Token(asset).balance(options.accounts[asset.blockchain])
+          return new web3TokensSolana.Token(asset).balance(options.accounts[asset.blockchain])
             .then((balance)=>{
               if(exists({ assets, asset })) { return resolve() }
               const assetWithBalance = reduceAssetWithBalance(asset, balance);

@@ -1,14 +1,18 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-constants'), require('@depay/web3-client'), require('@depay/web3-blockchains'), require('@depay/web3-tokens')) :
-  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-constants', '@depay/web3-client', '@depay/web3-blockchains', '@depay/web3-tokens'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Assets = {}, global.Web3Constants, global.Web3Client, global.Web3Blockchains, global.Web3Tokens));
-}(this, (function (exports, web3Constants, web3Client, web3Blockchains, web3Tokens) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-client'), require('@depay/web3-blockchains'), require('@depay/web3-tokens')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-client', '@depay/web3-blockchains', '@depay/web3-tokens'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Assets = {}, global.Web3Client, global.Web3Blockchains, global.Web3Tokens));
+}(this, (function (exports, web3Client, Blockchains, web3Tokens) { 'use strict';
+
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var Blockchains__default = /*#__PURE__*/_interopDefaultLegacy(Blockchains);
 
   const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
-    if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
-    if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+    if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == Blockchains__default['default'][blockchain].currency.address.toLowerCase()))){ return assets }
+    if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == Blockchains__default['default'][blockchain].currency.address.toLowerCase()))){ return assets }
 
-    const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == web3Constants.CONSTANTS[blockchain].NATIVE.toLowerCase()));
+    const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == Blockchains__default['default'][blockchain].currency.address.toLowerCase()));
     if(nativeTokenMissing) {
       let balance = await web3Client.request(
         {
@@ -19,9 +23,9 @@
         { cache: 30000 }
       );
       assets = [{
-        name: web3Constants.CONSTANTS[blockchain].CURRENCY,
-        symbol: web3Constants.CONSTANTS[blockchain].SYMBOL,
-        address: web3Constants.CONSTANTS[blockchain].NATIVE,
+        name: Blockchains__default['default'][blockchain].currency.name,
+        symbol: Blockchains__default['default'][blockchain].currency.symbol,
+        address: Blockchains__default['default'][blockchain].currency.address,
         type: 'NATIVE',
         blockchain,
         balance: balance.toString()
@@ -148,7 +152,7 @@
     
     let majorTokens = [];
     for (var blockchain in options.accounts){
-      web3Blockchains.Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+      Blockchains__default['default'].findByName(blockchain).tokens.forEach((token)=>{
         if(isFiltered({ options, address: token.address, blockchain })){ return }
         majorTokens.push(Object.assign({}, token, { blockchain }));
       });

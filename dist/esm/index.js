@@ -1,13 +1,12 @@
-import { CONSTANTS } from '@depay/web3-constants';
 import { request } from '@depay/web3-client';
-import { Blockchain } from '@depay/web3-blockchains';
+import Blockchains from '@depay/web3-blockchains';
 import { Token } from '@depay/web3-tokens';
 
 const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
-  if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
-  if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()))){ return assets }
+  if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()))){ return assets }
+  if(options.exclude && options.exclude[blockchain] && !!options.exclude[blockchain].find((exclude)=>(exclude.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()))){ return assets }
 
-  const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == CONSTANTS[blockchain].NATIVE.toLowerCase()));
+  const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()));
   if(nativeTokenMissing) {
     let balance = await request(
       {
@@ -18,9 +17,9 @@ const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) 
       { cache: 30000 }
     );
     assets = [{
-      name: CONSTANTS[blockchain].CURRENCY,
-      symbol: CONSTANTS[blockchain].SYMBOL,
-      address: CONSTANTS[blockchain].NATIVE,
+      name: Blockchains[blockchain].currency.name,
+      symbol: Blockchains[blockchain].currency.symbol,
+      address: Blockchains[blockchain].currency.address,
       type: 'NATIVE',
       blockchain,
       balance: balance.toString()
@@ -147,7 +146,7 @@ var dripAssets = async (options) => {
   
   let majorTokens = [];
   for (var blockchain in options.accounts){
-    Blockchain.findByName(blockchain).tokens.forEach((token)=>{
+    Blockchains.findByName(blockchain).tokens.forEach((token)=>{
       if(isFiltered({ options, address: token.address, blockchain })){ return }
       majorTokens.push(Object.assign({}, token, { blockchain }));
     });
