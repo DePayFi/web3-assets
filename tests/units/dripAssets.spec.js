@@ -3,7 +3,7 @@ import Blockchains from '@depay/web3-blockchains'
 import { dripAssets } from 'src'
 import { mock, resetMocks } from '@depay/web3-mock'
 import { getProvider, resetCache } from '@depay/web3-client'
-import { Token } from '@depay/web3-tokens'
+import Token from '@depay/web3-tokens'
 
 describe('dripAssets', ()=>{
 
@@ -144,13 +144,13 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-          symbol: 'WBTC',
-          name: 'Wrapped BTC',
-          decimals: 8,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
+          address: "0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c",
+          balance: "123456789",
+          blockchain: "ethereum",
+          decimals: 6,
+          name: "EURO Coin",
+          symbol: "EUROC",
+          type: "20",
         },
         {
           address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
@@ -180,19 +180,19 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
-          symbol: 'USDP',
-          name: 'Pax Dollar',
+          address: '0x956F47F50A910163D8BF957Cf5846D573E7f87CA',
+          symbol: 'FEI',
+          name: 'Fei USD',
           decimals: 18,
           type: '20',
           blockchain: 'ethereum',
           balance: '123456789'
         },
         {
-          address: '0x956F47F50A910163D8BF957Cf5846D573E7f87CA',
-          symbol: 'FEI',
-          name: 'Fei USD',
-          decimals: 18,
+          address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+          symbol: 'WBTC',
+          name: 'Wrapped BTC',
+          decimals: 8,
           type: '20',
           blockchain: 'ethereum',
           balance: '123456789'
@@ -288,15 +288,6 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-          symbol: 'WETH',
-          name: 'Wrapped Ether',
-          decimals: 18,
-          type: '20',
-          blockchain: 'polygon',
-          balance: '123456789'
-        },
-        {
           address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
           symbol: 'USDC',
           name: 'USD Coin',
@@ -315,18 +306,18 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0xa3Fa99A148fA48D14Ed51d610c367C61876997F1',
-          symbol: 'miMATIC',
-          name: 'miMATIC',
+          address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+          symbol: 'DAI',
+          name: 'Dai Stablecoin',
           decimals: 18,
           type: '20',
           blockchain: 'polygon',
           balance: '123456789'
         },
         {
-          address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-          symbol: 'DAI',
-          name: 'Dai Stablecoin',
+          address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+          symbol: 'WETH',
+          name: 'Wrapped Ether',
           decimals: 18,
           type: '20',
           blockchain: 'polygon',
@@ -340,6 +331,15 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'polygon',
           balance: '123456789'
+        },
+        {
+          address: '0xf6261529C6C2fBEB313aB25cDEcD243613b40EB5',
+          balance: '123456789',
+          blockchain: 'polygon',
+          decimals: 18,
+          name: 'DePay',
+          symbol: 'DEPAY',
+          type: '20'
         },
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
@@ -436,10 +436,10 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-          symbol: 'WBTC',
-          name: 'Wrapped BTC',
-          decimals: 8,
+          address: '0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c',
+          symbol: 'EUROC',
+          name: 'EURO Coin',
+          decimals: 6,
           type: '20',
           blockchain: 'ethereum',
           balance: '123456789'
@@ -472,15 +472,6 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
-          symbol: 'USDP',
-          name: 'Pax Dollar',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
           address: '0x956F47F50A910163D8BF957Cf5846D573E7f87CA',
           symbol: 'FEI',
           name: 'Fei USD',
@@ -488,6 +479,15 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'ethereum',
           balance: '123456789'
+        },
+        {
+          address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+          balance: "123456789",
+          blockchain: "ethereum",
+          decimals: 8,
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          type: "20",
         },
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
@@ -637,10 +637,10 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-          symbol: 'WBTC',
-          name: 'Wrapped BTC',
-          decimals: 8,
+          address: '0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c',
+          symbol: 'EUROC',
+          name: 'EURO Coin',
+          decimals: 6,
           type: '20',
           blockchain: 'ethereum',
           balance: '123456789'
@@ -673,15 +673,6 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
-          symbol: 'USDP',
-          name: 'Pax Dollar',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
           address: '0x956F47F50A910163D8BF957Cf5846D573E7f87CA',
           symbol: 'FEI',
           name: 'Fei USD',
@@ -689,6 +680,15 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'ethereum',
           balance: '123456789'
+        },
+        {
+          address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+          balance: "123456789",
+          blockchain: "ethereum",
+          decimals: 8,
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          type: "20",
         },
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
