@@ -589,7 +589,7 @@ describe('dripAssets', ()=>{
 
       provider = await getProvider('bsc')
       mock({ request: { return: 'Wrapped BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'name' }, provider, blockchain: 'bsc' })
-      mock({ request: { return: 'BNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'symbol' }, provider, blockchain: 'bsc' })
+      mock({ request: { return: 'WBNB', to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'symbol' }, provider, blockchain: 'bsc' })
       mock({ request: { return: 18, to: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', api: Token['bsc'].DEFAULT, method: 'decimals' }, provider, blockchain: 'bsc' })
       
       let allAssets = await dripAssets({ 
@@ -609,6 +609,33 @@ describe('dripAssets', ()=>{
       expect(dripsCount).toEqual(18)
 
       let expectedAssets = [
+        {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          symbol: 'DEPAY',
+          name: 'DePay',
+          decimals: 18,
+          type: '20',
+          blockchain: 'ethereum',
+          balance: '56789'
+        },
+        {
+          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
+          symbol: 'DEPAY',
+          name: 'DePay',
+          decimals: 18,
+          type: '20',
+          blockchain: 'bsc',
+          balance: '56789'
+        },
+        {
+          address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+          symbol: 'WBNB',
+          name: 'Wrapped BNB',
+          decimals: 18,
+          type: '20',
+          blockchain: 'bsc',
+          balance: '123456789'
+        },
         {
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
           symbol: 'ETH',
@@ -691,24 +718,6 @@ describe('dripAssets', ()=>{
           type: "20",
         },
         {
-          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
-          symbol: 'DEPAY',
-          name: 'DePay',
-          decimals: 18,
-          type: '20',
-          blockchain: 'ethereum',
-          balance: '56789'
-        },
-        {
-          address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-          symbol: 'WBNB',
-          name: 'Wrapped BNB',
-          decimals: 18,
-          type: '20',
-          blockchain: 'bsc',
-          balance: '123456789'
-        },
-        {
           address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
           symbol: 'BUSD',
           name: 'BUSD Token',
@@ -762,17 +771,8 @@ describe('dripAssets', ()=>{
           blockchain: 'bsc',
           balance: '123456789'
         },
-        {
-          address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
-          symbol: 'DEPAY',
-          name: 'DePay',
-          decimals: 18,
-          type: '20',
-          blockchain: 'bsc',
-          balance: '56789'
-        }
       ]
-
+      
       expect(drippedAssets).toEqual(expectedAssets)
       expect(allAssets).toEqual(expectedAssets)
     })

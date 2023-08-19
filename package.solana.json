@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-assets-solana",
   "moduleName": "Web3Assets",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "JavaScript library to retrieve Web3 assets of a given or connected wallet/account.",
   "main": "dist/umd/index.solana.js",
   "module": "dist/esm/index.solana.js",

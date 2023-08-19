@@ -82,6 +82,8 @@ var getAssets = async (options) => {
   return assets
 };
 
+function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
 const reduceAssetWithBalance = (asset, balance)=>{
   return Object.assign({}, {
     address: asset.address,
@@ -107,14 +109,63 @@ const isFiltered = ({ options, address, blockchain })=> {
   return false
 };
 
+const sortPriorities = (priorities, a,b)=>{
+  if(!priorities || priorities.length === 0) { return 0 }
+  let priorityIndexOfA = priorities.indexOf([a.blockchain, a.address.toLowerCase()].join(''));
+  let priorityIndexOfB = priorities.indexOf([b.blockchain, b.address.toLowerCase()].join(''));
+  
+  if(priorityIndexOfA !== -1 && priorityIndexOfB === -1) {
+    return -1 // a wins
+  }
+  if(priorityIndexOfB !== -1 && priorityIndexOfA === -1) {
+    return 1 // b wins
+  }
+
+  if(priorityIndexOfA < priorityIndexOfB) {
+    return -1 // a wins
+  }
+  if(priorityIndexOfB < priorityIndexOfA) {
+    return 1 // b wins
+  }
+  return 0
+};
+
 var dripAssets = async (options) => {
   if(options === undefined) { options = { accounts: {}, priority: [] }; }
 
   let assets = [];
+  let dripped = [];
   let promises = [];
+  let priorities = _optionalChain([options, 'optionalAccess', _ => _.priority, 'optionalAccess', _2 => _2.map, 'call', _3 => _3((priority)=>[priority.blockchain, priority.address.toLowerCase()].join(''))]);
+  let drippedIndex = 0;
+  let dripQueue = [];
+
+  const drip = (asset, recursive = true)=>{
+    if(typeof options.drip !== 'function') { return }
+    const assetAsKey = [asset.blockchain, asset.address.toLowerCase()].join('');
+    if(dripped.indexOf(assetAsKey) > -1) { return }
+    if(priorities && priorities.length && priorities.indexOf(assetAsKey) === drippedIndex) {
+      dripped.push(assetAsKey);
+      options.drip(asset);
+      drippedIndex += 1;
+      if(!recursive){ return }
+      dripQueue.forEach((asset)=>drip(asset, false));
+    } else if(!priorities || priorities.length === 0 || drippedIndex >= priorities.length) {
+      if(!priorities || priorities.length === 0 || priorities.indexOf(assetAsKey) === -1) {
+        dripped.push(assetAsKey);
+        options.drip(asset);
+      } else if (drippedIndex >= priorities.length) {
+        dripped.push(assetAsKey);
+        options.drip(asset);
+      }
+    } else if(!dripQueue.find((queued)=>queued.blockchain === asset.blockchain && queued.address.toLowerCase() === asset.address.toLowerCase())) {
+      dripQueue.push(asset);
+      dripQueue.sort((a,b)=>sortPriorities(priorities, a, b));
+    }
+  };
 
   // Prioritized Assets
-  
+
   promises = promises.concat((options.priority || []).map((asset)=>{
     return new Promise(async (resolve, reject)=>{
       try {
@@ -125,13 +176,14 @@ var dripAssets = async (options) => {
             name: await token.name(),
             symbol: await token.symbol(),
             decimals: await token.decimals(),
-            balance: (await token.balance(options.accounts[asset.blockchain])).toString()
+            balance: (await token.balance(options.accounts[asset.blockchain])).toString(),
+            type: Blockchains[asset.blockchain].currency.address.toLowerCase() === asset.address.toLowerCase() ? 'NATIVE' : '20'
           }
         );
         if(completedAsset.balance != '0') {
           if(exists({ assets, asset })) { return resolve() }
           assets.push(completedAsset);
-          if(typeof options.drip == 'function') { options.drip(completedAsset); }
+          drip(completedAsset);
           resolve(completedAsset);
         } else {
           resolve();
@@ -141,6 +193,10 @@ var dripAssets = async (options) => {
       }
     })
   }));
+  Promise.all(promises).then(()=>{
+    drippedIndex = _optionalChain([priorities, 'optionalAccess', _4 => _4.length]) || 0;
+    dripQueue.forEach((asset)=>drip(asset, false));
+  });
   
   // Major Tokens
   
@@ -148,6 +204,7 @@ var dripAssets = async (options) => {
   for (var blockchain in options.accounts){
     Blockchains.findByName(blockchain).tokens.forEach((token)=>{
       if(isFiltered({ options, address: token.address, blockchain })){ return }
+      if(_optionalChain([options, 'optionalAccess', _5 => _5.priority, 'optionalAccess', _6 => _6.find, 'call', _7 => _7((priority)=>priority.blockchain === blockchain && priority.address.toLowerCase() === token.address.toLowerCase())])){ return }
       majorTokens.push(Object.assign({}, token, { blockchain }));
     });
   }
@@ -159,7 +216,7 @@ var dripAssets = async (options) => {
           const assetWithBalance = reduceAssetWithBalance(asset, balance);
           if(assetWithBalance.balance != '0') {
             assets.push(assetWithBalance);
-            if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
+            drip(assetWithBalance);
             resolve(assetWithBalance);
           } else {
             resolve();
@@ -179,7 +236,7 @@ var dripAssets = async (options) => {
             const assetWithBalance = reduceAssetWithBalance(asset, balance);
             if(assetWithBalance.balance != '0') {
               assets.push(assetWithBalance);
-              if(typeof options.drip == 'function') { options.drip(assetWithBalance); }
+              drip(assetWithBalance);
               resolve(assetWithBalance);
             } else {
               resolve();
@@ -189,6 +246,10 @@ var dripAssets = async (options) => {
   }
 
   await Promise.all(promises);
+
+  assets.sort((a,b)=>sortPriorities(priorities, a, b));
+
+  dripQueue.forEach((asset)=>drip(asset, false));
 
   return assets
 };
