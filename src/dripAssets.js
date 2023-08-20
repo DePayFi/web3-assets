@@ -162,11 +162,21 @@ export default async (options) => {
     let allAssets = await getAssets(options)
     promises = promises.concat((allAssets.map((asset)=>{
       return new Promise((resolve, reject)=>{
-        return new Token(asset).balance(options.accounts[asset.blockchain])
-          .then((balance)=>{
+        const token = new Token(asset)
+        return token.balance(options.accounts[asset.blockchain])
+          .then(async(balance)=>{
             if(exists({ assets, asset })) { return resolve() }
             const assetWithBalance = reduceAssetWithBalance(asset, balance)
             if(assetWithBalance.balance != '0') {
+              if(assetWithBalance.name === undefined) {
+                assetWithBalance.name = await token.name()
+              }
+              if(assetWithBalance.symbol === undefined) {
+                assetWithBalance.symbol = await token.symbol()
+              }
+              if(assetWithBalance.decimals === undefined) {
+                assetWithBalance.decimals = await token.decimals()
+              }
               assets.push(assetWithBalance)
               drip(assetWithBalance)
               resolve(assetWithBalance)

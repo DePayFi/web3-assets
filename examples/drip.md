@@ -18,3 +18,20 @@ let allAssets = await Web3Assets.dripAssets({
 
 console.log('allAssets', allAssets)
 ```
+
+
+```javascript
+let allAssets = await Web3Assets.dripAssets({
+  accounts: {
+    solana: '2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1',
+  },
+  priority: [
+    { blockchain: 'solana', address: Web3Blockchains.solana.currency.address },
+  ],
+  drip: (asset)=>{
+   console.log('drip asset', asset)
+  }
+})
+
+console.log('allAssets', allAssets)
+```
