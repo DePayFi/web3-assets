@@ -152,7 +152,7 @@ export default async (options) => {
             resolve(assetWithBalance)
           } else {
             resolve()
-        }}).catch((error)=>{ console.log(error); resolve() })
+        }}).catch(()=>{ resolve() })
     })
   })))
 
@@ -182,7 +182,7 @@ export default async (options) => {
               resolve(assetWithBalance)
             } else {
               resolve()
-          }}).catch((error)=>{ console.log(error); resolve() })
+          }}).catch(()=>{ resolve() })
       })
     })))
   }

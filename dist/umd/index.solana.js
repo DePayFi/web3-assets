@@ -60,7 +60,7 @@
           const controller = new AbortController();
           setTimeout(()=>controller.abort(), 10000);
           fetch(`https://public.depay.com/accounts/${blockchain}/${address}/assets`, { signal: controller.signal })
-            .catch((error) => { console.log(error); resolve([]); })
+            .catch(() => { resolve([]); })
             .then((response) => {
               if(response && response.ok) {
                 return response.json()
@@ -81,7 +81,7 @@
               }
             })
             .then(resolve)
-            .catch((error) => { console.log(error); resolve([]); });
+            .catch(() => { resolve([]); });
         })
       }),
     ).then((responses) => responses.flat());
@@ -227,7 +227,7 @@
               resolve(assetWithBalance);
             } else {
               resolve();
-          }}).catch((error)=>{ console.log(error); resolve(); });
+          }}).catch(()=>{ resolve(); });
       })
     })));
 
@@ -257,7 +257,7 @@
                 resolve(assetWithBalance);
               } else {
                 resolve();
-            }}).catch((error)=>{ console.log(error); resolve(); })
+            }}).catch(()=>{ resolve(); })
         })
       })));
     }
