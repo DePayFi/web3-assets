@@ -96,7 +96,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(28)
+      expect(dripsCount).toEqual(27)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -210,15 +210,6 @@ describe('dripAssets', ()=>{
           address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
           symbol: 'WBNB',
           name: 'Wrapped BNB',
-          decimals: 18,
-          type: '20',
-          blockchain: 'bsc',
-          balance: '123456789'
-        },
-        {
-          address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-          symbol: 'BUSD',
-          name: 'BUSD Token',
           decimals: 18,
           type: '20',
           blockchain: 'bsc',
@@ -606,7 +597,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(18)
+      expect(dripsCount).toEqual(17)
 
       let expectedAssets = [
         {
@@ -718,15 +709,6 @@ describe('dripAssets', ()=>{
           type: "20",
         },
         {
-          address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-          symbol: 'BUSD',
-          name: 'BUSD Token',
-          decimals: 18,
-          type: '20',
-          blockchain: 'bsc',
-          balance: '123456789'
-        },
-        {
           address: '0x55d398326f99059fF775485246999027B3197955',
           symbol: 'USDT',
           name: 'Tether USD',
@@ -795,7 +777,7 @@ describe('dripAssets', ()=>{
         }
       })
 
-      expect(dripsCount).toEqual(19)
+      expect(dripsCount).toEqual(18)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -891,15 +873,6 @@ describe('dripAssets', ()=>{
           address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
           symbol: 'WBNB',
           name: 'Wrapped BNB',
-          decimals: 18,
-          type: '20',
-          blockchain: 'bsc',
-          balance: '123456789'
-        },
-        {
-          address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-          symbol: 'BUSD',
-          name: 'BUSD Token',
           decimals: 18,
           type: '20',
           blockchain: 'bsc',
