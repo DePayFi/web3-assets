@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-assets-solana",
   "moduleName": "Web3Assets",
-  "version": "7.3.0",
+  "version": "7.3.1",
   "description": "JavaScript library to retrieve Web3 assets of a given or connected wallet/account.",
   "main": "dist/umd/index.solana.js",
   "module": "dist/esm/index.solana.js",
@@ -26,7 +26,7 @@
   "dependencies": {},
   "peerDependencies": {
     "@depay/solana-web3.js": "^1.26.0",
-    "@depay/web3-blockchains": "^9.3.1",
+    "@depay/web3-blockchains": "^9.3.2",
     "@depay/web3-client-solana": "^10.18.4",
     "@depay/web3-tokens-solana": "^10.3.0"
   },
