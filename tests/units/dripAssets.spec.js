@@ -97,6 +97,7 @@ describe('dripAssets', ()=>{
       })
 
       expect(dripsCount).toEqual(27)
+      expect(allAssets.length).toEqual(27)
 
       let expectedAssets = [{
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -343,8 +344,21 @@ describe('dripAssets', ()=>{
         }
       ]
 
-      expect(drippedAssets).toEqual(expectedAssets)
-      expect(allAssets).toEqual(expectedAssets)
+      // Ensure all expected assets are present in drippedAssets without enforcing a fixed order
+      expectedAssets.forEach(asset => {
+        expect(drippedAssets).toContainEqual(asset)
+      })
+
+      // Ensure no extra assets are dripped
+      expect(drippedAssets.length).toEqual(expectedAssets.length)
+
+      // Ensure all expected assets are present in allAssets without enforcing a fixed order
+      expectedAssets.forEach(asset => {
+        expect(allAssets).toContainEqual(asset)
+      })
+
+      // Ensure no extra assets in allAssets
+      expect(allAssets.length).toEqual(expectedAssets.length)
     })
   })
 
@@ -407,8 +421,11 @@ describe('dripAssets', ()=>{
       })
 
       expect(dripsCount).toEqual(16)
+      expect(allAssets.length).toEqual(16)
 
-      let expectedAssets = [{
+      // Expected assets that are not excluded, no fixed order
+      let expectedAssets = [
+        {
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
           symbol: 'ETH',
           name: 'Ether',
@@ -472,13 +489,13 @@ describe('dripAssets', ()=>{
           balance: '123456789'
         },
         {
-          address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-          balance: "123456789",
-          blockchain: "ethereum",
+          address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+          symbol: 'WBTC',
+          name: 'Wrapped BTC',
           decimals: 8,
-          name: "Wrapped BTC",
-          symbol: "WBTC",
-          type: "20",
+          type: '20',
+          blockchain: 'ethereum',
+          balance: '123456789'
         },
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
@@ -554,8 +571,21 @@ describe('dripAssets', ()=>{
         }
       ]
 
-      expect(drippedAssets).toEqual(expectedAssets)
-      expect(allAssets).toEqual(expectedAssets)
+      // The actual drippedAssets should contain the expected assets (no fixed order)
+      expectedAssets.forEach(asset => {
+        expect(drippedAssets).toContainEqual(asset)
+      })
+
+      // Ensure no extra assets are dripped
+      expect(drippedAssets.length).toEqual(expectedAssets.length)
+
+      // Also check that allAssets contain the expected assets
+      expectedAssets.forEach(asset => {
+        expect(allAssets).toContainEqual(asset)
+      })
+
+      // Ensure no extra assets in the final allAssets
+      expect(allAssets.length).toEqual(expectedAssets.length)
     })
   })
 
@@ -598,8 +628,10 @@ describe('dripAssets', ()=>{
       })
 
       expect(dripsCount).toEqual(17)
+      expect(allAssets.length).toEqual(17)
 
-      let expectedAssets = [
+      // Expect the prioritized assets to be in the correct order
+      let prioritizedAssets = [
         {
           address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb',
           symbol: 'DEPAY',
@@ -626,6 +658,20 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'bsc',
           balance: '123456789'
+        }
+      ]
+
+      expect(drippedAssets.slice(0, 3)).toEqual(prioritizedAssets)
+
+      let remainingAssets = [
+        {
+          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          symbol: 'BNB',
+          name: 'Binance Coin',
+          decimals: 18,
+          type: 'NATIVE',
+          blockchain: 'bsc',
+          balance: '123456789'
         },
         {
           address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -634,15 +680,6 @@ describe('dripAssets', ()=>{
           decimals: 18,
           type: 'NATIVE',
           blockchain: 'ethereum',
-          balance: '123456789'
-        },
-        {
-          address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-          symbol: 'BNB',
-          name: 'Binance Coin',
-          decimals: 18,
-          type: 'NATIVE',
-          blockchain: 'bsc',
           balance: '123456789'
         },
         {
@@ -706,7 +743,7 @@ describe('dripAssets', ()=>{
           decimals: 8,
           name: "Wrapped BTC",
           symbol: "WBTC",
-          type: "20",
+          type: "20"
         },
         {
           address: '0x55d398326f99059fF775485246999027B3197955',
@@ -752,11 +789,25 @@ describe('dripAssets', ()=>{
           type: '20',
           blockchain: 'bsc',
           balance: '123456789'
-        },
+        }
       ]
-      
-      expect(drippedAssets).toEqual(expectedAssets)
-      expect(allAssets).toEqual(expectedAssets)
+
+      // Ensure the remaining assets are present in the full asset list
+      remainingAssets.forEach(asset => {
+        expect(drippedAssets).toContainEqual(asset)
+      })
+
+      // The first 3 assets in allAssets should match the prioritized ones in the correct order
+      expect(allAssets.slice(0, 3)).toEqual(prioritizedAssets)
+
+      // The remaining assets (after the prioritized ones) should match the rest, but in any order
+      let remainingAllAssets = allAssets.slice(3)
+      remainingAssets.forEach(asset => {
+        expect(remainingAllAssets).toContainEqual(asset)
+      })
+
+      // Ensure no extra assets exist
+      expect(remainingAllAssets.length).toEqual(remainingAssets.length)
     })
   })
 

@@ -130,44 +130,32 @@ const sortPriorities = (priorities, a,b)=>{
   return 0
 };
 
+const promiseWithTimeout = (promise, timeout = 10000) => {
+  return Promise.race([
+    promise,
+    new Promise((resolve) => setTimeout(() => resolve(null), timeout)) // Resolve with null on timeout
+  ]);
+};
+
 var dripAssets = async (options) => {
   if(options === undefined) { options = { accounts: {}, priority: [] }; }
 
   let assets = [];
   let dripped = [];
   let promises = [];
-  let priorities = _optionalChain([options, 'optionalAccess', _ => _.priority, 'optionalAccess', _2 => _2.map, 'call', _3 => _3((priority)=>[priority.blockchain, priority.address.toLowerCase()].join(''))]);
-  let drippedIndex = 0;
-  let dripQueue = [];
+  let priorities = Array.isArray(options.priority) ? options.priority.map(priority => [priority.blockchain, priority.address.toLowerCase()].join('')) : [];
 
-  const drip = (asset, recursive = true)=>{
-    if(typeof options.drip !== 'function') { return }
+  const drip = (asset)=>{
+    if (!asset || typeof options.drip !== 'function') { return } // Ensure asset is valid
     const assetAsKey = [asset.blockchain, asset.address.toLowerCase()].join('');
     if(dripped.indexOf(assetAsKey) > -1) { return }
-    if(priorities && priorities.length && priorities.indexOf(assetAsKey) === drippedIndex) {
-      dripped.push(assetAsKey);
-      options.drip(asset);
-      drippedIndex += 1;
-      if(!recursive){ return }
-      dripQueue.forEach((asset)=>drip(asset, false));
-    } else if(!priorities || priorities.length === 0 || drippedIndex >= priorities.length) {
-      if(!priorities || priorities.length === 0 || priorities.indexOf(assetAsKey) === -1) {
-        dripped.push(assetAsKey);
-        options.drip(asset);
-      } else if (drippedIndex >= priorities.length) {
-        dripped.push(assetAsKey);
-        options.drip(asset);
-      }
-    } else if(!dripQueue.find((queued)=>queued.blockchain === asset.blockchain && queued.address.toLowerCase() === asset.address.toLowerCase())) {
-      dripQueue.push(asset);
-      dripQueue.sort((a,b)=>sortPriorities(priorities, a, b));
-    }
+    dripped.push(assetAsKey);
+    options.drip(asset);
   };
 
   // Prioritized Assets
-
   promises = promises.concat((options.priority || []).map((asset)=>{
-    return new Promise(async (resolve, reject)=>{
+    return promiseWithTimeout(new Promise(async (resolve) => {
       try {
         let token = new Token(asset);
         let completedAsset = Object.assign({},
@@ -181,85 +169,105 @@ var dripAssets = async (options) => {
           }
         );
         if(completedAsset.balance != '0') {
-          if(exists({ assets, asset })) { return resolve() }
+          if(exists({ assets, asset })) { return resolve(null) } // Resolve with null if already exists
           assets.push(completedAsset);
-          drip(completedAsset);
           resolve(completedAsset);
         } else {
-          resolve();
+          resolve(null);
         }
-      } catch (e) {
-        resolve();
+      } catch (error) {
+        console.error('Error fetching prioritized asset:', asset, error);
+        resolve(null); // Resolve with null to prevent blocking
       }
-    })
+    }))
   }));
-  Promise.all(promises).then(()=>{
-    drippedIndex = _optionalChain([priorities, 'optionalAccess', _4 => _4.length]) || 0;
-    dripQueue.forEach((asset)=>drip(asset, false));
-  });
-  
+
   // Major Tokens
-  
   let majorTokens = [];
   for (var blockchain in options.accounts){
     Blockchains.findByName(blockchain).tokens.forEach((token)=>{
       if(isFiltered({ options, address: token.address, blockchain })){ return }
-      if(_optionalChain([options, 'optionalAccess', _5 => _5.priority, 'optionalAccess', _6 => _6.find, 'call', _7 => _7((priority)=>priority.blockchain === blockchain && priority.address.toLowerCase() === token.address.toLowerCase())])){ return }
+      if(_optionalChain([options, 'optionalAccess', _ => _.priority, 'optionalAccess', _2 => _2.find, 'call', _3 => _3((priority)=>priority.blockchain === blockchain && priority.address.toLowerCase() === token.address.toLowerCase())])){ return }
       majorTokens.push(Object.assign({}, token, { blockchain }));
     });
   }
+
   promises = promises.concat((majorTokens.map((asset)=>{
-    return new Promise((resolve, reject)=>{
+    return promiseWithTimeout(new Promise((resolve) => {
       new Token(asset).balance(options.accounts[asset.blockchain])
         .then((balance)=>{
-          if(exists({ assets, asset })) { return resolve() }
+          if(exists({ assets, asset })) { return resolve(null) } // Resolve with null if already exists
           const assetWithBalance = reduceAssetWithBalance(asset, balance);
           if(assetWithBalance.balance != '0') {
             assets.push(assetWithBalance);
-            drip(assetWithBalance);
             resolve(assetWithBalance);
           } else {
-            resolve();
-        }}).catch(()=>{ resolve(); });
-    })
+            resolve(null);
+        }}).catch((error)=>{
+          console.error('Error fetching major token balance:', asset, error);
+          resolve(null); // Resolve with null on error
+        });
+    }))
   })));
 
   // All other assets
-
   if(options.only == undefined || Object.keys(options.only).every((list)=>list.length == 0)) {
-    let allAssets = await getAssets(options);
-    promises = promises.concat((allAssets.map((asset)=>{
-      return new Promise((resolve, reject)=>{
-        const token = new Token(asset);
-        return token.balance(options.accounts[asset.blockchain])
-          .then(async(balance)=>{
-            if(exists({ assets, asset })) { return resolve() }
-            const assetWithBalance = reduceAssetWithBalance(asset, balance);
-            if(assetWithBalance.balance != '0') {
-              if(assetWithBalance.name === undefined) {
-                assetWithBalance.name = await token.name();
-              }
-              if(assetWithBalance.symbol === undefined) {
-                assetWithBalance.symbol = await token.symbol();
-              }
-              if(assetWithBalance.decimals === undefined) {
-                assetWithBalance.decimals = await token.decimals();
-              }
-              assets.push(assetWithBalance);
-              drip(assetWithBalance);
-              resolve(assetWithBalance);
-            } else {
-              resolve();
-          }}).catch(()=>{ resolve(); })
-      })
-    })));
+    try {
+      let allAssets = await getAssets(options);
+      promises = promises.concat((allAssets.map((asset)=>{
+        return promiseWithTimeout(new Promise((resolve) => {
+          const token = new Token(asset);
+          return token.balance(options.accounts[asset.blockchain])
+            .then(async(balance)=>{
+              if(exists({ assets, asset })) { return resolve(null) } // Resolve with null if already exists
+              const assetWithBalance = reduceAssetWithBalance(asset, balance);
+              if(assetWithBalance.balance != '0') {
+                if(assetWithBalance.name === undefined) {
+                  assetWithBalance.name = await token.name();
+                }
+                if(assetWithBalance.symbol === undefined) {
+                  assetWithBalance.symbol = await token.symbol();
+                }
+                if(assetWithBalance.decimals === undefined) {
+                  assetWithBalance.decimals = await token.decimals();
+                }
+                assets.push(assetWithBalance);
+                resolve(assetWithBalance);
+              } else {
+                resolve(null);
+            }}).catch((error)=>{
+              console.error('Error fetching asset balance:', asset, error);
+              resolve(null); // Resolve with null on error
+            })
+        }))
+      })));
+    } catch (error) {
+      console.error('Error fetching all assets:', error);
+    }
   }
 
-  await Promise.all(promises);
+  // Ensure all promises are resolved
+  const resolvedAssets = await Promise.all(promises);
 
+  // Drip prioritized assets first in their defined order
+  priorities.forEach(priorityKey => {
+    const asset = resolvedAssets.find(a => a && [a.blockchain, a.address.toLowerCase()].join('') === priorityKey); // Ensure valid asset
+    if (asset) {
+      drip(asset);
+    }
+  });
+
+  // Drip non-prioritized assets
+  resolvedAssets.forEach(asset => {
+    if (!asset) return // Ensure valid asset
+    const assetKey = [asset.blockchain, asset.address.toLowerCase()].join('');
+    if (!priorities.includes(assetKey)) {
+      drip(asset);
+    }
+  });
+
+  // Sort assets based on priorities before returning
   assets.sort((a,b)=>sortPriorities(priorities, a, b));
-
-  dripQueue.forEach((asset)=>drip(asset, false));
 
   return assets
 };
