@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-assets",
   "moduleName": "Web3Assets",
-  "version": "7.4.1",
+  "version": "8.0.0",
   "description": "JavaScript library to retrieve Web3 assets of a given or connected wallet/account.",
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && rollup -c rollup.module.config.js && rollup -c rollup.module.evm.config.js && rollup -c rollup.module.solana.config.js",
+    "build": "rm -rf dist && rollup -c rollup.module.config.js && rollup -c rollup.module.evm.config.js && rollup -c rollup.module.svm.config.js",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "dev": "rollup -c rollup.dev.config.js -w",
@@ -34,10 +34,10 @@
   "private": false,
   "dependencies": {},
   "peerDependencies": {
-    "@depay/solana-web3.js": "^1.26.0",
-    "@depay/web3-blockchains": "^9.7.0",
-    "@depay/web3-client": "^10.19.2",
-    "@depay/web3-tokens": "^10.4.3"
+    "@depay/solana-web3.js": "^1.98.0",
+    "@depay/web3-blockchains": "^9.7.9",
+    "@depay/web3-client": "^11.0.1",
+    "@depay/web3-tokens": "^11.0.0"
   },
   "engines": {
     "node": ">=16"
@@ -45,15 +45,15 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
-    "@depay/solana-web3.js": "^1.26.0",
-    "@depay/web3-blockchains": "^9.7.0",
-    "@depay/web3-client": "^10.19.2",
-    "@depay/web3-client-evm": "^10.19.2",
-    "@depay/web3-client-solana": "^10.19.2",
-    "@depay/web3-mock": "^14.19.1",
-    "@depay/web3-tokens": "^10.4.3",
-    "@depay/web3-tokens-evm": "^10.4.3",
-    "@depay/web3-tokens-solana": "^10.4.3",
+    "@depay/solana-web3.js": "^1.98.0",
+    "@depay/web3-blockchains": "^9.7.9",
+    "@depay/web3-client": "^11.0.1",
+    "@depay/web3-client-evm": "^11.0.1",
+    "@depay/web3-client-svm": "^11.0.1",
+    "@depay/web3-mock": "^15.1.1",
+    "@depay/web3-tokens": "^11.0.0",
+    "@depay/web3-tokens-evm": "^11.0.0",
+    "@depay/web3-tokens-svm": "^11.0.0",
     "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-replace": "^2.4.2",

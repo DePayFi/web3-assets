@@ -1,6 +1,6 @@
-import { request } from '@depay/web3-client-solana';
+import { request } from '@depay/web3-client-svm';
 import Blockchains from '@depay/web3-blockchains';
-import Token from '@depay/web3-tokens-solana';
+import Token from '@depay/web3-tokens-svm';
 
 const ensureNativeTokenAsset = async ({ address, options, assets, blockchain }) => {
   if(options.only && options.only[blockchain] && !options.only[blockchain].find((only)=>(only.toLowerCase() == Blockchains[blockchain].currency.address.toLowerCase()))){ return assets }

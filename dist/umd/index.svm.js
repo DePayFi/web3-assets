@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-client-solana'), require('@depay/web3-blockchains'), require('@depay/web3-tokens-solana')) :
-  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-client-solana', '@depay/web3-blockchains', '@depay/web3-tokens-solana'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-client-svm'), require('@depay/web3-blockchains'), require('@depay/web3-tokens-svm')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-client-svm', '@depay/web3-blockchains', '@depay/web3-tokens-svm'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Assets = {}, global.Web3Client, global.Web3Blockchains, global.Web3Tokens));
-}(this, (function (exports, web3ClientSolana, Blockchains, Token) { 'use strict';
+}(this, (function (exports, web3ClientSvm, Blockchains, Token) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -15,7 +15,7 @@
 
     const nativeTokenMissing = !assets.find((asset)=>(asset.address.toLowerCase() == Blockchains__default['default'][blockchain].currency.address.toLowerCase()));
     if(nativeTokenMissing) {
-      let balance = await web3ClientSolana.request(
+      let balance = await web3ClientSvm.request(
         {
           blockchain: blockchain,
           address,
